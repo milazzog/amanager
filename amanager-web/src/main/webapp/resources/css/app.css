@@ -215,3 +215,7 @@ span.text-underline {
     border-bottom: 1px solid #9c9c9c;
     min-height:19px;
 }
+
+body .ui-dialog-content.ui-widget-content {
+    padding: 0;
+}

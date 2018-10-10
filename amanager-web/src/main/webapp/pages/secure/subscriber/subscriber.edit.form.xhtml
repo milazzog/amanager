@@ -14,111 +14,166 @@
 
                 <p:messages id="messages" closable="true"/>
 
-                    <p:panel id="subscriberRegistryPanel"
-                           header="#{lang['header.subscriber.detail.registry']}">
-                        <div class="grid-x">
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberFirstName"
-                                               value="#{lang['model.subscriber.first.name']}"/>
-                                <h:outputText id="subscriberFirstName"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.firstName}"/>
-                            </div>
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberLastName"
-                                               value="#{lang['model.subscriber.last.name']}"/>
-                                <h:outputText id="subscriberLastName"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.lastName}"/>
-                            </div>
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberVatCode"
-                                               value="#{lang['model.subscriber.vat.code']}"/>
-                                <h:outputText id="subscriberVatCode"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.vatCode}"/>
-                            </div>
+                <p:panel id="subscriberRegistryPanel"
+                         header="#{lang['header.subscriber.edit.registry']}">
+                    <div class="grid-x">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberFirstName"
+                                           value="#{lang['model.subscriber.first.name']}"/>
+                            <p:inputText id="subscriberFirstName"
+                                         value="#{subscriberAddController.dataSource.firstName}"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.subscriber.first.name.mandatory']}">
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="subscriberVatCode"
+                                        listener="#{subscriberAddController.generateVatCode}"/>
+                            </p:inputText>
                         </div>
-                        <div class="grid-x">
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberBirthCity"
-                                               value="#{lang['model.subscriber.birth.city']}"/>
-                                <h:outputText id="subscriberBirthCity"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.birthCity.name}"/>
-                            </div>
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberBirthDate"
-                                               value="#{lang['model.subscriber.birth.date']}"/>
-                                <h:outputText id="subscriberBirthDate"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.getDate(subscriberDetailController.subscriber.birthDate)}"/>
-                            </div>
-                            <div class="large-2 cell field">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberLastName"
+                                           value="#{lang['model.subscriber.last.name']}"/>
+                            <p:inputText id="subscriberLastName"
+                                         value="#{subscriberAddController.dataSource.lastName}"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.subscriber.last.name.mandatory']}">
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="subscriberVatCode"
+                                        listener="#{subscriberAddController.generateVatCode}"/>
+                            </p:inputText>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberVatCode"
+                                           value="#{lang['model.subscriber.vat.code']}"/>
+                            <p:inputText id="subscriberVatCode"
+                                         readonly="true"
+                                         value="#{subscriberAddController.dataSource.vatCode}"/>
+                        </div>
+                    </div>
+                    <div class="grid-x">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberBirthCity"
+                                           value="#{lang['model.subscriber.birth.city']}"/>
+                            <p:autoComplete id="subscriberBirthCity"
+                                            minQueryLength="3"
+                                            maxResults="5"
+                                            completeMethod="#{subscriberAddController.autocompleteMunicipality}"
+                                            var="municipality"
+                                            itemLabel="#{municipality.name}"
+                                            itemValue="#{municipality}"
+                                            converter="municipalityConverter"
+                                            value="#{subscriberAddController.dataSource.birthCity}"
+                                            required="true"
+                                            requiredMessage="#{lang['validation.subscriber.birth.city.mandatory']}">
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="subscriberVatCode"
+                                        listener="#{subscriberAddController.generateVatCode}"/>
+                            </p:autoComplete>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberBirthDate"
+                                           value="#{lang['model.subscriber.birth.date']}"/>
+                            <p:calendar id="subscriberBirthDate"
+                                        value="#{subscriberAddController.dataSource.birthDate}"
+                                        mask="true" pattern="#{lang['date.pattern']}"
+                                        required="true"
+                                        requiredMessage="#{lang['validation.subscriber.birth.date.mandatory']}">
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="subscriberVatCode"
+                                        listener="#{subscriberAddController.generateVatCode}"/>
+                            </p:calendar>
+                        </div>
+                        <div class="large-1 cell field">
 
-                                <p:outputLabel for="subscriberGender"
-                                               value="#{lang['model.subscriber.gender']}"/>
-                                <h:outputText id="subscriberGender"
-                                              styleClass="text-underline"
-                                              value="#{lang[subscriberDetailController.subscriber.gender.labelKey]}"/>
-                            </div>
+                            <p:outputLabel for="subscriberGender"
+                                           value="#{lang['model.subscriber.gender']}"/>
+                            <p:selectOneMenu id="subscriberGender"
+                                             value="#{subscriberAddController.dataSource.gender}"
+                                             required="true"
+                                             requiredMessage="#{lang['validation.subscriber.gender.mandatory']}">
+                                <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{subscriberAddController.genders}" var="g"
+                                               itemLabel="#{lang[g.labelKey]}"
+                                               itemValue="#{g}"/>
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="subscriberVatCode"
+                                        listener="#{subscriberAddController.generateVatCode}"/>
+                            </p:selectOneMenu>
                         </div>
-                    </p:panel>
+                    </div>
+                </p:panel>
 
                 <p:panel id="subscriberAddressAndContactsPanel"
-                         header="#{lang['header.subscriber.detail.address.and.contacts']}">
-                        <div class="grid-x">
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberCity"
-                                               value="#{lang['model.subscriber.city']}"/>
-                                <h:outputText id="subscriberCity"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.city.name}"/>
-                            </div>
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberAddress"
-                                               value="#{lang['model.subscriber.address']}"/>
-                                <h:outputText id="subscriberAddress"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.address}"/>
-                            </div>
-                            <div class="large-2 cell field">
-                                <p:outputLabel for="subscriberPhone"
-                                               value="#{lang['model.subscriber.phone']}"/>
-                                <h:outputText id="subscriberPhone"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.phone}"/>
-                            </div>
-                        </div>
+                         header="#{lang['header.subscriber.edit.address.and.contacts']}">
                     <div class="grid-x">
-                        <div class="large-4 cell field">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberCity"
+                                           value="#{lang['model.subscriber.city']}"/>
+                            <p:autoComplete id="subscriberCity"
+                                            minQueryLength="3"
+                                            maxResults="5"
+                                            completeMethod="#{subscriberAddController.autocompleteMunicipality}"
+                                            var="municipality"
+                                            itemLabel="#{municipality.name}"
+                                            itemValue="#{municipality}"
+                                            converter="municipalityConverter"
+                                            value="#{subscriberAddController.dataSource.city}"
+                                            required="true"
+                                            requiredMessage="#{lang['validation.subscriber.city.mandatory']}"/>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberAddress"
+                                           value="#{lang['model.subscriber.address']}"/>
+                            <p:inputText id="subscriberAddress"
+                                         value="#{subscriberAddController.dataSource.address}"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.subscriber.address.mandatory']}"/>
+
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberPhone"
+                                           value="#{lang['model.subscriber.phone']}"/>
+                            <p:inputText id="subscriberPhone"
+                                         value="#{subscriberAddController.dataSource.phone}"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.subscriber.phone.mandatory']}"/>
+                        </div>
+                    </div>
+                    <div class="grid-x">
+                        <div class="large-2 cell field">
                             <p:outputLabel for="subscriberEmail"
                                            value="#{lang['model.subscriber.email']}"/>
-                            <h:outputText id="subscriberEmail"
-                                          styleClass="text-underline"
-                                          value="#{subscriberDetailController.subscriber.email}"/>
+                            <p:inputText id="subscriberEmail"
+                                         value="#{subscriberAddController.dataSource.email}"/>
                         </div>
                     </div>
                 </p:panel>
 
                 <p:panel id="subscriberDocumentPanel"
-                         header="#{lang['header.subscriber.detail.documents']}">
-                        <div class="grid-x">
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberDocumentType"
-                                               value="#{lang['model.subscriber.document.type']}"/>
-                                <h:outputText id="subscriberDocumentType"
-                                              styleClass="text-underline"
-                                              value="#{lang[subscriberDetailController.subscriber.documentType.labelKey]}"/>
-                            </div>
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberDocumentNumber"
-                                               value="#{lang['model.subscriber.document.number']}"/>
-                                <h:outputText id="subscriberDocumentNumber"
-                                              styleClass="text-underline"
-                                              value="#{subscriberDetailController.subscriber.documentNumber}"/>
-                            </div>
+                         header="#{lang['header.subscriber.edit.documents']}">
+                    <div class="grid-x">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberDocumentType"
+                                           value="#{lang['model.subscriber.document.type']}"/>
+                            <p:selectOneMenu id="subscriberDocumentType"
+                                             value="#{subscriberAddController.dataSource.documentType}">
+                                <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{subscriberAddController.identityDocumentTypes}" var="d"
+                                               itemLabel="#{lang[d.labelKey]}"
+                                               itemValue="#{d}"/>
+                            </p:selectOneMenu>
                         </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberDocumentNumber"
+                                           value="#{lang['model.subscriber.document.number']}"/>
+                            <p:inputText id="subscriberDocumentNumber"
+                                         value="#{subscriberAddController.dataSource.documentNumber}"/>
+                        </div>
+                    </div>
                 </p:panel>
 
                 <div class="grid-x paddingV10">
@@ -128,6 +183,10 @@
                                      value="#{lang['label.add']}"
                                      actionListener="#{subscriberAddController.register}"
                                      update="subscriberEditPanel">
+                        <p:confirm
+                                header="#{lang['header.confirm']}"
+                                message="#{lang['msg.info.subscriber.registration.confirm']}"
+                                icon="ui-icon-alert"/>
                     </p:commandButton>
                     <p:commandButton icon="fa fa-remove"
                                      styleClass="align-right"
@@ -136,7 +195,18 @@
                                      actionListener="#{subscriberAddController.cancel}"
                                      update="subscriberEditPanel"/>
                 </div>
-
+                <p:confirmDialog id="confirm"
+                                 global="true"
+                                 showEffect="fade" hideEffect="fade">
+                    <div class="grid-x">
+                        <div class="cell large-offset-9">
+                            <p:commandButton value="#{lang['label.yes']}" type="button"
+                                             styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
+                            <p:commandButton value="#{lang['label.no']}" type="button"
+                                             styleClass="ui-confirmdialog-no right" icon="fa fa-close"/>
+                        </div>
+                    </div>
+                </p:confirmDialog>
             </h:form>
         </p:panel>
     </ui:composition>
