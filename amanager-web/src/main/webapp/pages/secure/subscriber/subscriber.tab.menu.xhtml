@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+<h:body>
+    <!--@elvariable id="subscriberTabMenuActiveIndex" type="java.lang.Integer"-->
+    <ui:composition>
+        <h:form>
+            <p:tabMenu activeIndex="#{subscriberTabMenuActiveIndex}">
+                <p:menuitem value="#{lang['menu.subscriber.search']}"
+                            icon="fa fa-search"
+                            outcome="/pages/secure/subscriber/subscriber.search.jsf">
+                </p:menuitem>
+                <p:menuitem value="#{lang['menu.subscriber.add']}"
+                            icon="fa fa-user-plus"
+                            outcome="/pages/secure/subscriber/subscriber.add.jsf">
+                </p:menuitem>
+            </p:tabMenu>
+        </h:form>
+    </ui:composition>
+</h:body>
+</html>

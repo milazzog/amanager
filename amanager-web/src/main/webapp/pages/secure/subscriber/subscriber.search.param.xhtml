@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+
+    <!--@elvariable id="hideVatCode" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideCardNumber" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideDocument" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideName" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideBirthCity" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideBirthDate" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideCity" type="java.lang.Boolean"-->
+    <!--@elvariable id="hidePhone" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideEmail" type="java.lang.Boolean"-->
+    <!--@elvariable id="componentToUpdate" type="java.lang.String"-->
+    <!--@elvariable id="municipality" type="com.mdev.amanager.persistence.domain.model.Municipality"-->
+
+    <ui:composition id="subscriberSearchParam">
+        <p:panel>
+            <h:form id="subscriberSearchParamForm">
+                <p:panel id="subscriberSearchParamPanel">
+                    <div class="grid-x">
+                        <c:if test="#{hideVatCode == null or !hideVatCode}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberVatCode"
+                                               value="#{lang['model.subscriber.vat.code']}"/>
+                                <p:inputText id="subscriberVatCode"
+                                             value="#{subscriberSearchController.searchParam.vatCode.value}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideCardNumber == null or !hideCardNumber}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberCardNumber"
+                                               value="#{lang['model.subscriber.card.card.number']}"/>
+                                <p:inputText id="subscriberCardNumber"
+                                             value="#{subscriberSearchController.searchParam.cardNumber.value}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideDocument == null or !hideDocument}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberDocumentType"
+                                               value="#{lang['model.subscriber.document.type']}"/>
+                                <p:selectOneMenu id="subscriberDocumentType"
+                                                 value="#{subscriberSearchController.searchParam.documentType}">
+                                    <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{subscriberSearchController.identityDocumentTypes}" var="d"
+                                                   itemLabel="#{lang[d.labelKey]}"
+                                                   itemValue="#{d}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="large-1 cell field">
+                                <p:outputLabel for="subscriberDocumentNumber"
+                                               value="#{lang['model.subscriber.document.number']}"/>
+                                <p:inputText id="subscriberDocumentNumber"
+                                             value="#{subscriberSearchController.searchParam.documentNumber.value}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideName == null or !hideName}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberFirstName"
+                                               value="#{lang['model.subscriber.first.name']}"/>
+                                <p:inputText id="subscriberFirstName"
+                                             value="#{subscriberSearchController.searchParam.firstName.value}"/>
+                            </div>
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberLastName"
+                                               value="#{lang['model.subscriber.last.name']}"/>
+                                <p:inputText id="subscriberLastName"
+                                             value="#{subscriberSearchController.searchParam.lastName.value}"/>
+                            </div>
+                        </c:if>
+                    </div>
+                    <div class="grid-x">
+                        <c:if test="#{hideBirthCity == null or !hideBirthCity}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberBirthCity"
+                                               value="#{lang['model.subscriber.birth.city']}"/>
+                                <p:autoComplete id="subscriberBirthCity"
+                                                minQueryLength="3"
+                                                maxResults="5"
+                                                completeMethod="#{subscriberSearchController.autocompleteMunicipality}"
+                                                var="municipality"
+                                                itemLabel="#{municipality.name}"
+                                                itemValue="#{municipality}"
+                                                converter="municipalityConverter"
+                                                value="#{subscriberSearchController.searchParam.birthCity}">
+                                </p:autoComplete>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideBirthDate == null or !hideBirthDate}">
+                            <div class="large-1 cell field">
+                                <p:outputLabel for="subscriberBirthDateFrom"
+                                               value="#{lang['model.subscriber.birth.date']}"/>
+                                <p:calendar id="subscriberBirthDateFrom"
+                                            value="#{subscriberSearchController.searchParam.birthDate.dateFrom}"
+                                            mask="true" pattern="#{lang['date.pattern']}"/>
+                            </div>
+                            <div class="large-1 cell field">
+                                <p:outputLabel for="subscriberBirthDateTo"
+                                               value="#{lang['label.date.to']}"/>
+                                <p:calendar id="subscriberBirthDateTo"
+                                            value="#{subscriberSearchController.searchParam.birthDate.dateTo}"
+                                            mask="true" pattern="#{lang['date.pattern']}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideCity == null or !hideCity}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberCity"
+                                               value="#{lang['model.subscriber.city']}"/>
+                                <p:autoComplete id="subscriberCity"
+                                                minQueryLength="3"
+                                                maxResults="5"
+                                                completeMethod="#{subscriberSearchController.autocompleteMunicipality}"
+                                                var="municipality"
+                                                itemLabel="#{municipality.name}"
+                                                itemValue="#{municipality}"
+                                                converter="municipalityConverter"
+                                                value="#{subscriberSearchController.searchParam.city}">
+                                </p:autoComplete>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hidePhone == null or !hidePhone}">
+                            <div class="large-1 cell field">
+                                <p:outputLabel for="subscriberPhone"
+                                               value="#{lang['model.subscriber.phone']}"/>
+                                <p:inputText id="subscriberPhone"
+                                             value="#{subscriberSearchController.searchParam.phone.value}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideEmail == null or !hideEmail}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberEmail"
+                                               value="#{lang['model.subscriber.email']}"/>
+                                <p:inputText id="subscriberEmail"
+                                             value="#{subscriberSearchController.searchParam.email.value}"/>
+                            </div>
+                        </c:if>
+                        <div class="large-1 cell field">
+                            <p:commandButton icon="fa fa-search"
+                                             styleClass="top-14"
+                                             title="#{lang['label.search']}"
+                                             actionListener="#{subscriberSearchController.search}"
+                                             update="#{componentToUpdate}"/>
+                            <p:commandButton icon="fa fa-remove"
+                                             styleClass="top-14"
+                                             title="#{lang['label.reset']}"
+                                             actionListener="#{subscriberSearchController.reset}"
+                                             update="subscriberSearchParamPanel"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </h:form>
+        </p:panel>
+    </ui:composition>
+</h:body>
+</html>

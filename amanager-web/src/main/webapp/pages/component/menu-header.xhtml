@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+<ui:composition>
+    <h:form>
+        <div class="grid-x">
+            <div class="large-1 cell logo-wrapper">
+                <p:graphicImage library="images" name="logo.png"/>
+            </div>
+            <div class="large-9 cell">
+                <p:menubar styleClass="menu-top">
+                    <p:menuitem value="#{lang['page.subscriber.handling']}"
+                                outcome="/pages/secure/subscriber/subscriber.search.jsf"
+                                icon="fa fa-users"/>
+                </p:menubar>
+            </div>
+            <div class="large-2 cell">
+                <div class="grid-x">
+                    <div class="large-1 cell username-holder">
+                        <span class="fa fa-user"/>
+                    </div>
+                    <div class="large-9 cell username-holder">
+                        <h:outputText value="#{loginController.getLoggedInUser().username}"/>
+                    </div>
+                    <div class="large-2 cell">
+                        <p:commandButton icon="fa fa-power-off" action="#{loginController.logout()}" ajax="false" styleClass="button-logout"/>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </h:form>
+</ui:composition>
+</html>

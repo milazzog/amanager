@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+    <ui:composition>
+
+        <p:panel id="subscriberEditPanel">
+            <h:form id="subscriberEditForm">
+
+                <p:messages id="messages" closable="true"/>
+
+                    <p:panel id="subscriberRegistryPanel"
+                           header="#{lang['header.subscriber.detail.registry']}">
+                        <div class="grid-x">
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberFirstName"
+                                               value="#{lang['model.subscriber.first.name']}"/>
+                                <h:outputText id="subscriberFirstName"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.firstName}"/>
+                            </div>
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberLastName"
+                                               value="#{lang['model.subscriber.last.name']}"/>
+                                <h:outputText id="subscriberLastName"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.lastName}"/>
+                            </div>
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberVatCode"
+                                               value="#{lang['model.subscriber.vat.code']}"/>
+                                <h:outputText id="subscriberVatCode"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.vatCode}"/>
+                            </div>
+                        </div>
+                        <div class="grid-x">
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberBirthCity"
+                                               value="#{lang['model.subscriber.birth.city']}"/>
+                                <h:outputText id="subscriberBirthCity"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.birthCity.name}"/>
+                            </div>
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberBirthDate"
+                                               value="#{lang['model.subscriber.birth.date']}"/>
+                                <h:outputText id="subscriberBirthDate"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.getDate(subscriberDetailController.subscriber.birthDate)}"/>
+                            </div>
+                            <div class="large-2 cell field">
+
+                                <p:outputLabel for="subscriberGender"
+                                               value="#{lang['model.subscriber.gender']}"/>
+                                <h:outputText id="subscriberGender"
+                                              styleClass="text-underline"
+                                              value="#{lang[subscriberDetailController.subscriber.gender.labelKey]}"/>
+                            </div>
+                        </div>
+                    </p:panel>
+
+                    <p:tab id="subscriberAddressAndContactsPanel"
+                           title="#{lang['header.subscriber.detail.address.and.contacts']}">
+                        <div class="grid-x">
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberCity"
+                                               value="#{lang['model.subscriber.city']}"/>
+                                <h:outputText id="subscriberCity"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.city.name}"/>
+                            </div>
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberAddress"
+                                               value="#{lang['model.subscriber.address']}"/>
+                                <h:outputText id="subscriberAddress"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.address}"/>
+                            </div>
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="subscriberPhone"
+                                               value="#{lang['model.subscriber.phone']}"/>
+                                <h:outputText id="subscriberPhone"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.phone}"/>
+                            </div>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="subscriberEmail"
+                                           value="#{lang['model.subscriber.email']}"/>
+                            <h:outputText id="subscriberEmail"
+                                          styleClass="text-underline"
+                                          value="#{subscriberDetailController.subscriber.email}"/>
+                        </div>
+                    </p:tab>
+
+                    <p:tab id="subscriberDocumentPanel"
+                           title="#{lang['header.subscriber.detail.documents']}">
+                        <div class="grid-x">
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberDocumentType"
+                                               value="#{lang['model.subscriber.document.type']}"/>
+                                <h:outputText id="subscriberDocumentType"
+                                              styleClass="text-underline"
+                                              value="#{lang[subscriberDetailController.subscriber.documentType.labelKey]}"/>
+                            </div>
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberDocumentNumber"
+                                               value="#{lang['model.subscriber.document.number']}"/>
+                                <h:outputText id="subscriberDocumentNumber"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.documentNumber}"/>
+                            </div>
+                        </div>
+                    </p:tab>
+
+                    <p:tab id="subscriberCardValidFromPanel"
+                           title="#{lang['header.subscriber.detail.card.valid.from']}">
+                        <div class="grid-x">
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberType"
+                                               value="#{lang['model.subscriber.card.type']}"/>
+                                <h:outputText id="subscriberType"
+                                              styleClass="text-underline"
+                                              value="#{empty subscriberDetailController.subscriber.activeCard ? '-' : lang[subscriberDetailController.subscriber.activeCard.type.labelKey]}"/>
+                            </div>
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberValidFrom"
+                                               value="#{lang['model.subscriber.card.valid.from']}"/>
+                                <h:outputText id="subscriberValidFrom"
+                                              styleClass="text-underline"
+                                              value="#{empty subscriberDetailController.subscriber.activeCard ? '-' : subscriberDetailController.getDate(subscriberDetailController.subscriber.activeCard.validFrom)}"/>
+                            </div>
+                        </div>
+                    </p:tab>
+
+                <ui:insert name="actionButtons"/>
+
+            </h:form>
+        </p:panel>
+    </ui:composition>
+</h:body>
+</html>

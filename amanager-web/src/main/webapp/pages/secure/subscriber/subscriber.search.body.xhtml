@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+<h:body>
+    <ui:composition id="subscriberHandling">
+
+        <ui:include src="/pages/secure/subscriber/subscriber.tab.menu.xhtml">
+            <ui:param name="subscriberTabMenuActiveIndex" value="0"/>
+        </ui:include>
+
+        <ui:include src="/pages/secure/subscriber/subscriber.search.param.xhtml">
+            <ui:param name="componentToUpdate" value="subscriberTable"/>
+        </ui:include>
+
+        <p:panel id="subscriberSearchResultPanel">
+
+            <p:dataTable id="subscriberTable"
+                         value="#{subscriberSearchController.searchResults}"
+                         var="subscriber"
+                         emptyMessage="#{lang['msg.info.table.empty']}" widgetVar="subscriberTable">
+
+                <p:column headerText="#{lang['model.subscriber.card.card.number']}" styleClass="th-7-5">
+                    <h:outputText value="#{subscriber.activeCard == null ? '-' : subscriber.activeCard.cardNumber}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.subscriber.suspended']}" styleClass="th-7-5">
+                    <h:outputText value="#{subscriber.suspended ? lang['label.yes'] : lang['label.no']}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.subscriber.card.type']}" styleClass="th-7-5">
+                    <h:outputText value="#{subscriber.activeCard == null ? '-' : lang[subscriber.activeCard.type.labelKey]}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.subscriber.nominative']}" styleClass="th-15">
+                    <h:outputText value="#{subscriber.firstName} #{subscriber.lastName}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.subscriber.city']}" styleClass="th-15">
+                    <h:outputText value="#{subscriber.city.name}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.subscriber.birth.date']}" styleClass="th-10">
+                    <h:outputText value="#{subscriberSearchController.getDate(subscriber.birthDate)}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.subscriber.phone']}" styleClass="th-10">
+                    <h:outputText value="#{subscriber.phone}"/>
+                </p:column>
+                <p:column headerText="#{lang['label.action']}" styleClass="th-10">
+                    <p:commandButton icon="fa fa-info"
+                                     title="#{lang['label.show.details']}"
+                                     actionListener="#{subscriberSearchController.loadSubscriberDetails(subscriber)}"
+                                     oncomplete="PF('subscriberDetailDialog').show()"
+                                     update="subscriberDetailDialog"/>
+                    <p:commandButton icon="fa fa-edit"
+                                     title="#{lang['label.edit']}"
+                                     actionListener="#{subscriberSearchController.loadSubscriberDetails(subscriber)}"
+                                     oncomplete="PF('subscriberEditDialog').show()"
+                                     update="subscriberEditDialog"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:dialog id="subscriberDetailDialog"
+                  header="#{subscriberDetailController.header}"
+                  widgetVar="subscriberDetailDialog"
+                  width="80%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <ui:decorate template="/pages/secure/subscriber/subscriber.detail.form.xhtml">
+                <ui:define name="actionButtons">
+                    <div class="grid-x paddingV10">
+                        <p:commandButton icon="fa fa-remove"
+                                         styleClass="right"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('subscriberDetailDialog').hide()"/>
+                    </div>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+        <p:dialog id="subscriberEditDialog"
+                  header="#{subscriberDetailController.header}"
+                  widgetVar="subscriberDetailDialog"
+                  width="80%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <ui:decorate template="/pages/secure/subscriber/subscriber.edit.form.xhtml">
+                <ui:define name="actionButtons">
+                    <div class="grid-x paddingV10">
+                        <p:commandButton icon="fa fa-remove"
+                                         styleClass="right"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('subscriberDetailDialog').hide()"/>
+                    </div>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+    </ui:composition>
+</h:body>
+</html>

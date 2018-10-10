@@ -1,0 +1,213 @@
+body {
+    height: 100%;
+    width: 100%;
+}
+
+body, body .ui-widget {
+    font-size: 0.95em !important;
+}
+
+body .ui-button-icon-only .ui-icon.fa,
+body .ui-button-text-icon-left .ui-icon.fa,
+body .ui-button-text-icon-right .ui-icon.fa,
+body .ui-button-icon-only .ui-icon.fab,
+body .ui-button-text-icon-left .ui-icon.fab,
+body .ui-button-text-icon-right .ui-icon.fab,
+body .ui-button-icon-only .ui-icon.far,
+body .ui-button-text-icon-left .ui-icon.far,
+body .ui-button-text-icon-right .ui-icon.far,
+body .ui-button-icon-only .ui-icon.fas,
+body .ui-button-text-icon-left .ui-icon.fas,
+body .ui-button-text-icon-right .ui-icon.fas {
+    margin-top: -5px;
+}
+
+body button.ui-button {
+    height: 30px;
+}
+
+.ui-button {
+    background: #dcdcdc;
+    height: 33px;
+    border: 1px solid #9c9c9c !important;
+}
+
+.ui-menu, .ui-menu .ui-menu-child {
+    background: #dcdcdc top repeat-x;
+    border-radius: 0px;
+    padding: 0px !important;
+    border: 1px solid #9c9c9c !important;
+}
+
+.left {
+    float: left !important;
+}
+
+.right {
+    margin-left: auto !important;
+}
+
+button.top-14 {
+    margin-top: 14px;
+}
+
+.top24 {
+    margin-top: 24px;
+}
+
+form#login_form {
+    margin-top: 20px;
+}
+
+span#auth_error {
+    color: #cc0000;
+    font-size: 0.90em;
+}
+
+.ui-menu .ui-menu-list .ui-menuitem {
+    border-radius: 0;
+    border-right: 1px solid #9c9c9c !important;
+    height: 100%;
+}
+
+div.username-holder {
+    padding-top: 6px;
+    height: 33px;
+    background: #dcdcdc;
+    text-align: center;
+    border-bottom: 1px solid #9c9c9c !important;
+    border-top: 1px solid #9c9c9c !important;
+    font-size: 0.75em;
+}
+
+div.ui-menu.ui-menubar.ui-widget.ui-widget-content.ui-corner-all.ui-helper-clearfix.menu-top, img.menu-logo {
+    height: 33px;
+}
+
+div.logo-wrapper {
+    text-align: center;
+    background-color: #dcdcdc;
+    border-top: 1px solid #9c9c9c !important;
+    border-bottom: 1px solid #9c9c9c !important;
+    border-left: 1px solid #9c9c9c !important;
+    height: 33px;
+}
+
+div.logo-wrapper img {
+    padding-top: 4px;
+    width: 80%;
+}
+
+.button-logout {
+    color: #ffffff;
+    background-color: #cc0000;
+    height: 100% !important;
+}
+
+.paddingV10 {
+    padding-top: 10px;
+}
+
+div#logo-container div {
+    margin-top: 50px;
+    text-align: center;
+}
+
+div.field {
+    padding-left: 10px;
+}
+
+body span.ui-button-text {
+    padding-top: 5px !important;
+}
+
+.ui-selectonemenu.ui-widget.ui-state-default.ui-corner-all {
+    height: 24px;
+    width: 100%;
+    border-radius: 0px;
+}
+
+.ui-selectonemenu-label.ui-inputfield.ui-corner-all {
+    line-height: inherit !important;
+    font-size: inherit !important;
+    width: 100%;
+    height: 100%;
+}
+
+span.ui-autocomplete {
+    width: 100%;
+}
+
+body div.field .ui-inputfield {
+    height: 24px;
+}
+
+/**
+UI OVERRIDE
+ */
+label.ui-corner-all {
+    border-radius: 0;
+}
+
+body .ui-selectonemenu {
+    padding-right: 0;
+}
+
+body .ui-selectcheckboxmenu {
+    width: 100%
+}
+
+body .ui-widget-content .ui-selectcheckboxmenu.ui-state-default {
+    border: 1px solid #cccccc;
+}
+
+body .ui-widget-content .ui-selectcheckboxmenu.ui-state-default, body .ui-widget-content .ui-selectcheckboxmenu .ui-state-hover {
+    background-color: #ffffff;
+}
+
+body .ui-state-hover {
+    background-color: #ffffff;
+}
+
+body .ui-widget-content .ui-selectcheckboxmenu-trigger.ui-state-hover {
+    background-color: #e2e2e2;
+}
+
+body .ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger {
+    width: auto;
+}
+
+body .ui-selectcheckboxmenu .ui-selectcheckboxmenu-label {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+table { font-size: 0.9em !important; }
+th { text-align: left !important; }
+th.th-5 { width: 5%; }
+th.th-7-5 { width: 7.5%; }
+th.th-10 { width: 10%; }
+th.th-12-5 { width: 12.5%; }
+th.th-15 { width: 15%; }
+th.th-17-5 { width: 17.5%; }
+th.th-20 { width: 20%; }
+th.th-22-5 { width: 22.5%; }
+th.th-25 { width: 25%; }
+th.th-27-5 { width: 27.5%; }
+th.th-30 { width: 30%; }
+th.th-32-5 { width: 32.5%; }
+th.th-35 { width: 35%; }
+th.th-37-5 { width: 37.5%; }
+th.th-40 { width: 40%; }
+th.th-42-5 { width: 42.5%; }
+th.th-45 { width: 45%; }
+th.th-47-5 { width: 47.5%; }
+th.th-50 { width: 50%; }
+
+span.text-underline {
+    margin:5px 0;
+    padding-bottom:5px;
+    display:block;
+    border-bottom: 1px solid  #66a97f;
+    min-height:19px;
+}

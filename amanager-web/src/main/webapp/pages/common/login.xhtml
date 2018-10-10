@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<f:view>
+    <h:head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <h:outputStylesheet library="css" name="app.css"/>
+        <h:outputStylesheet library="css" name="foundation.css"/>
+        <h:outputScript library="js" name="vendor/foundation.js"/>
+        <h:outputScript library="js" name="vendor/what-input.js"/>
+        <h:outputScript library="js" name="app.js"/>
+        <title>#{initParam['application.title']} - #{lang['page.login']}</title>
+    </h:head>
+    <h:body>
+
+        <div id="logo-container" class="grid-x">
+            <div class="large-4 large-offset-4 cell">
+                <p:graphicImage library="images" name="logo.png"/>
+            </div>
+        </div>
+
+        <h:form id="login_form" prependId="false">
+            <div class="grid-x">
+                <div class="large-4 large-offset-4 cell">
+                    <p:outputLabel for="j_username" value="#{lang['label.username']}"/>
+                    <p:inputText id="j_username"/>
+                </div>
+            </div>
+            <div class="grid-x">
+                <div class="large-4 large-offset-4 cell">
+                    <p:outputLabel for="j_password" value="#{lang['label.password']}"/>
+                    <p:inputText id="j_password" type="password"/>
+                </div>
+            </div>
+            <div class="grid-x">
+                <div class="large-4 large-offset-4 cell">
+                    <p:commandButton value="Login" actionListener="#{loginController.login}" type="submit"
+                                     process="@form" ajax="false" styleClass="top24 right"/>
+                </div>
+            </div>
+            <div class="grid-x">
+                <div class="large-4 large-offset-4 cell text-center">
+                    <h:outputText id="auth_error" value="#{lang['msg.error.invalid.credential']}"
+                                  rendered="#{param.error != null and param.error == true}"/>
+                </div>
+            </div>
+        </h:form>
+    </h:body>
+</f:view>
+</html>
