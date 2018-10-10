@@ -47,6 +47,10 @@ body button.ui-button {
     margin-left: auto !important;
 }
 
+div.cell .right {
+    float: right !important;
+}
+
 button.top-14 {
     margin-top: 14px;
 }
@@ -208,6 +212,6 @@ span.text-underline {
     margin:5px 0;
     padding-bottom:5px;
     display:block;
-    border-bottom: 1px solid  #66a97f;
+    border-bottom: 1px solid #9c9c9c;
     min-height:19px;
 }

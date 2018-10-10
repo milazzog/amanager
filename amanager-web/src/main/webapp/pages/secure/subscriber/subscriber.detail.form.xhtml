@@ -90,12 +90,14 @@
                                               value="#{subscriberDetailController.subscriber.phone}"/>
                             </div>
                         </div>
-                        <div class="large-2 cell field">
-                            <p:outputLabel for="subscriberEmail"
-                                           value="#{lang['model.subscriber.email']}"/>
-                            <h:outputText id="subscriberEmail"
-                                          styleClass="text-underline"
-                                          value="#{subscriberDetailController.subscriber.email}"/>
+                        <div class="grid-x">
+                            <div class="large-4 cell field">
+                                <p:outputLabel for="subscriberEmail"
+                                               value="#{lang['model.subscriber.email']}"/>
+                                <h:outputText id="subscriberEmail"
+                                              styleClass="text-underline"
+                                              value="#{subscriberDetailController.subscriber.email}"/>
+                            </div>
                         </div>
                     </p:tab>
 

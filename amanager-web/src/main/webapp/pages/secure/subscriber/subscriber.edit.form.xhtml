@@ -65,8 +65,8 @@
                         </div>
                     </p:panel>
 
-                    <p:tab id="subscriberAddressAndContactsPanel"
-                           title="#{lang['header.subscriber.detail.address.and.contacts']}">
+                <p:panel id="subscriberAddressAndContactsPanel"
+                         header="#{lang['header.subscriber.detail.address.and.contacts']}">
                         <div class="grid-x">
                             <div class="large-4 cell field">
                                 <p:outputLabel for="subscriberCity"
@@ -90,17 +90,19 @@
                                               value="#{subscriberDetailController.subscriber.phone}"/>
                             </div>
                         </div>
-                        <div class="large-2 cell field">
+                    <div class="grid-x">
+                        <div class="large-4 cell field">
                             <p:outputLabel for="subscriberEmail"
                                            value="#{lang['model.subscriber.email']}"/>
                             <h:outputText id="subscriberEmail"
                                           styleClass="text-underline"
                                           value="#{subscriberDetailController.subscriber.email}"/>
                         </div>
-                    </p:tab>
+                    </div>
+                </p:panel>
 
-                    <p:tab id="subscriberDocumentPanel"
-                           title="#{lang['header.subscriber.detail.documents']}">
+                <p:panel id="subscriberDocumentPanel"
+                         header="#{lang['header.subscriber.detail.documents']}">
                         <div class="grid-x">
                             <div class="large-4 cell field">
                                 <p:outputLabel for="subscriberDocumentType"
@@ -117,29 +119,23 @@
                                               value="#{subscriberDetailController.subscriber.documentNumber}"/>
                             </div>
                         </div>
-                    </p:tab>
+                </p:panel>
 
-                    <p:tab id="subscriberCardValidFromPanel"
-                           title="#{lang['header.subscriber.detail.card.valid.from']}">
-                        <div class="grid-x">
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberType"
-                                               value="#{lang['model.subscriber.card.type']}"/>
-                                <h:outputText id="subscriberType"
-                                              styleClass="text-underline"
-                                              value="#{empty subscriberDetailController.subscriber.activeCard ? '-' : lang[subscriberDetailController.subscriber.activeCard.type.labelKey]}"/>
-                            </div>
-                            <div class="large-4 cell field">
-                                <p:outputLabel for="subscriberValidFrom"
-                                               value="#{lang['model.subscriber.card.valid.from']}"/>
-                                <h:outputText id="subscriberValidFrom"
-                                              styleClass="text-underline"
-                                              value="#{empty subscriberDetailController.subscriber.activeCard ? '-' : subscriberDetailController.getDate(subscriberDetailController.subscriber.activeCard.validFrom)}"/>
-                            </div>
-                        </div>
-                    </p:tab>
-
-                <ui:insert name="actionButtons"/>
+                <div class="grid-x paddingV10">
+                    <p:commandButton icon="fa fa-user-plus"
+                                     styleClass="right"
+                                     title="#{lang['label.add']}"
+                                     value="#{lang['label.add']}"
+                                     actionListener="#{subscriberAddController.register}"
+                                     update="subscriberEditPanel">
+                    </p:commandButton>
+                    <p:commandButton icon="fa fa-remove"
+                                     styleClass="align-right"
+                                     title="#{lang['label.cancel']}"
+                                     value="#{lang['label.cancel']}"
+                                     actionListener="#{subscriberAddController.cancel}"
+                                     update="subscriberEditPanel"/>
+                </div>
 
             </h:form>
         </p:panel>
