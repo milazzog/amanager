@@ -1,6 +1,8 @@
 package com.mdev.amanager.persistence.domain.repository.base;
 
 import com.mdev.amanager.persistence.domain.model.base.Identifiable;
+import com.mdev.amanager.persistence.domain.repository.exceptions.EntityNotFoundException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -10,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by gmilazzo on 01/10/2018.
@@ -37,8 +40,12 @@ public abstract class BaseRepository<T extends Identifiable> implements Reposito
     }
 
     @Transactional
-    public T find(Long id) {
-        return em.find(getManagedClass(), id);
+    public T find(Long id) throws EntityNotFoundException {
+        T r = em.find(getManagedClass(), id);
+        if (Objects.isNull(r)) {
+            throw new EntityNotFoundException(String.format("no %s with id [%09d] found.", getManagedClass().getSimpleName(), id));
+        }
+        return r;
     }
 
     @Transactional

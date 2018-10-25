@@ -1,7 +1,9 @@
-package com.mdev.amanager.web.controller;
+package com.mdev.amanager.web.controller.subscriber;
 
+import com.mdev.amanager.core.datasource.SubscriberCardDataSource;
 import com.mdev.amanager.core.datasource.SubscriberDataSource;
 import com.mdev.amanager.core.service.VatCodeService;
+import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.persistence.domain.enums.Gender;
 import com.mdev.amanager.persistence.domain.enums.IdentityDocumentType;
 import com.mdev.amanager.persistence.domain.enums.SubscriberType;
@@ -10,6 +12,7 @@ import com.mdev.amanager.persistence.domain.model.Subscriber;
 import com.mdev.amanager.persistence.domain.repository.MunicipalityRepository;
 import com.mdev.amanager.core.service.SubscriberService;
 import com.mdev.amanager.web.controller.base.RootManagedBean;
+import com.mdev.amanager.core.util.CommonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,12 +44,15 @@ public class SubscriberAddController extends RootManagedBean{
 
     private Subscriber subscriber;
 
-    private SubscriberDataSource dataSource;
+    private SubscriberDataSource subscriberDataSource;
+    private SubscriberCardDataSource cardDataSource;
 
     @PostConstruct
     public void init(){
 
-        dataSource = new SubscriberDataSource();
+        subscriberDataSource = new SubscriberDataSource();
+        cardDataSource = new SubscriberCardDataSource();
+        cardDataSource.setValidFrom(CommonUtil.roundToNearestMonth());
     }
 
     public List<Municipality> autocompleteMunicipality(String part){
@@ -58,24 +63,25 @@ public class SubscriberAddController extends RootManagedBean{
 
     public void generateVatCode(){
 
-        if(StringUtils.isNotBlank(dataSource.getFirstName()) && StringUtils.isNotBlank(dataSource.getLastName()) && Objects.nonNull(dataSource.getGender()) && Objects.nonNull(dataSource.getBirthDate()) && Objects.nonNull(dataSource.getBirthDate())){
-            dataSource.setVatCode(vatCodeService.getVatCode(dataSource.getLastName(), dataSource.getFirstName(), dataSource.getBirthDate(), dataSource.getGender(), dataSource.getBirthCity()));
+        if (StringUtils.isNotBlank(subscriberDataSource.getFirstName()) && StringUtils.isNotBlank(subscriberDataSource.getLastName()) && Objects.nonNull(subscriberDataSource.getGender()) && Objects.nonNull(subscriberDataSource.getBirthDate()) && Objects.nonNull(subscriberDataSource.getBirthDate())) {
+            subscriberDataSource.setVatCode(vatCodeService.getVatCode(subscriberDataSource.getLastName(), subscriberDataSource.getFirstName(), subscriberDataSource.getBirthDate(), subscriberDataSource.getGender(), subscriberDataSource.getBirthCity()));
         }
     }
 
     public void register(){
 
         try {
-            subscriberService.create(dataSource);
+            subscriberService.create(subscriberDataSource, cardDataSource);
             messageManager.info("msg.info.subscriber.registration");
-        } catch (SubscriberService.SubscriberServiceException e) {
+            init();
+        } catch (ServiceException e) {
             logger.error(String.format("error while creating %s", Subscriber.class.getSimpleName()), e);
             messageManager.error("msg.error.subscriber.registration");
         }
     }
 
     public void cancel(){
-        this.dataSource = new SubscriberDataSource();
+        this.subscriberDataSource = new SubscriberDataSource();
     }
 
     public IdentityDocumentType[] getIdentityDocumentTypes() {
@@ -96,11 +102,19 @@ public class SubscriberAddController extends RootManagedBean{
         this.subscriber = subscriber;
     }
 
-    public SubscriberDataSource getDataSource() {
-        return dataSource;
+    public SubscriberDataSource getSubscriberDataSource() {
+        return subscriberDataSource;
     }
 
-    public void setDataSource(SubscriberDataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setSubscriberDataSource(SubscriberDataSource subscriberDataSource) {
+        this.subscriberDataSource = subscriberDataSource;
+    }
+
+    public SubscriberCardDataSource getCardDataSource() {
+        return cardDataSource;
+    }
+
+    public void setCardDataSource(SubscriberCardDataSource cardDataSource) {
+        this.cardDataSource = cardDataSource;
     }
 }

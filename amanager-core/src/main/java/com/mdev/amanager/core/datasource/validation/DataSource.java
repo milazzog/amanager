@@ -13,9 +13,13 @@ import java.util.stream.Stream;
 /**
  * Created by gmilazzo on 07/10/2018.
  */
-public class DataSource {
+public abstract class DataSource<T> {
 
-    public void validate() throws MissingRequiredFieldException {
+    protected abstract T asData();
+
+    public abstract void fromData(T data);
+
+    public T validate() throws MissingRequiredFieldException {
         Class<?> c = this.getClass();
 
         List<Field> fields = Stream
@@ -40,5 +44,8 @@ public class DataSource {
                 e.printStackTrace();
             }
         }
+        return asData();
     }
+
+
 }

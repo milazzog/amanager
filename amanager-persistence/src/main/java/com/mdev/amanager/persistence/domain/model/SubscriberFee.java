@@ -27,8 +27,13 @@ public class SubscriberFee implements Identifiable {
     @JoinColumn(name = "CARD", foreignKey = @ForeignKey(name = "FK_SUBSCRIBER_FEE_CARD"))
     private SubscriberCard card;
 
-    @Column(name = "AMOUNT", precision = 8, scale = 2, nullable = false)
-    private BigDecimal amount;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "FEE_CONFIG", foreignKey = @ForeignKey(name = "FK_SUBSCRIBER_CARD_FEE_CONFIG"))
+    private FeeConfig feeConfig;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CREDIT_NOTE", foreignKey = @ForeignKey(name = "FK_SUBSCRIBER_CARD_CREDIT_NOTE"))
+    private CreditNote creditNote;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "VALID_FROM", nullable = false)
@@ -51,12 +56,20 @@ public class SubscriberFee implements Identifiable {
         this.card = card;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public FeeConfig getFeeConfig() {
+        return feeConfig;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setFeeConfig(FeeConfig feeConfig) {
+        this.feeConfig = feeConfig;
+    }
+
+    public CreditNote getCreditNote() {
+        return creditNote;
+    }
+
+    public void setCreditNote(CreditNote creditNote) {
+        this.creditNote = creditNote;
     }
 
     public Date getValidfrom() {
@@ -84,7 +97,8 @@ public class SubscriberFee implements Identifiable {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (card != null ? !card.equals(that.card) : that.card != null) return false;
-        if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
+        if (feeConfig != null ? !feeConfig.equals(that.feeConfig) : that.feeConfig != null) return false;
+        if (creditNote != null ? !creditNote.equals(that.creditNote) : that.creditNote != null) return false;
         if (validfrom != null ? !validfrom.equals(that.validfrom) : that.validfrom != null) return false;
         return validTo != null ? validTo.equals(that.validTo) : that.validTo == null;
     }
@@ -93,7 +107,8 @@ public class SubscriberFee implements Identifiable {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (card != null ? card.hashCode() : 0);
-        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (feeConfig != null ? feeConfig.hashCode() : 0);
+        result = 31 * result + (creditNote != null ? creditNote.hashCode() : 0);
         result = 31 * result + (validfrom != null ? validfrom.hashCode() : 0);
         result = 31 * result + (validTo != null ? validTo.hashCode() : 0);
         return result;

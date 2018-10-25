@@ -21,32 +21,36 @@
 
                 <p:messages id="messages" closable="true"/>
 
+
                 <p:panel id="subscriberRegistryPanel" header="#{lang['header.subscriber.add.registry']}">
                     <div class="grid-x">
                         <div class="large-2 cell field">
+                            <p:focus for="subscriberFirstName"/>
                             <p:outputLabel for="subscriberFirstName"
                                            value="#{lang['model.subscriber.first.name']}"/>
                             <p:inputText id="subscriberFirstName"
-                                         value="#{subscriberAddController.dataSource.firstName}"
+                                         tabindex="1"
+                                         value="#{subscriberAddController.subscriberDataSource.firstName}"
                                          required="true"
                                          requiredMessage="#{lang['validation.subscriber.first.name.mandatory']}">
                                 <p:ajax process="@this"
                                         partialSubmit="true"
                                         update="subscriberVatCode"
-                                        listener="#{subscriberAddController.generateVatCode}"/>
+                                        listener="#{subscriberAddController.generateVatCode()}"/>
                             </p:inputText>
                         </div>
                         <div class="large-2 cell field">
                             <p:outputLabel for="subscriberLastName"
                                            value="#{lang['model.subscriber.last.name']}"/>
                             <p:inputText id="subscriberLastName"
-                                         value="#{subscriberAddController.dataSource.lastName}"
+                                         tabindex="2"
+                                         value="#{subscriberAddController.subscriberDataSource.lastName}"
                                          required="true"
                                          requiredMessage="#{lang['validation.subscriber.last.name.mandatory']}">
                                 <p:ajax process="@this"
                                         partialSubmit="true"
                                         update="subscriberVatCode"
-                                        listener="#{subscriberAddController.generateVatCode}"/>
+                                        listener="#{subscriberAddController.generateVatCode()}"/>
                             </p:inputText>
                         </div>
                         <div class="large-2 cell field">
@@ -54,7 +58,7 @@
                                            value="#{lang['model.subscriber.vat.code']}"/>
                             <p:inputText id="subscriberVatCode"
                                          readonly="true"
-                                         value="#{subscriberAddController.dataSource.vatCode}"/>
+                                         value="#{subscriberAddController.subscriberDataSource.vatCode}"/>
                         </div>
                     </div>
                     <div class="grid-x">
@@ -62,6 +66,7 @@
                             <p:outputLabel for="subscriberBirthCity"
                                            value="#{lang['model.subscriber.birth.city']}"/>
                             <p:autoComplete id="subscriberBirthCity"
+                                            tabindex="3"
                                             minQueryLength="3"
                                             maxResults="5"
                                             completeMethod="#{subscriberAddController.autocompleteMunicipality}"
@@ -69,27 +74,28 @@
                                             itemLabel="#{municipality.name}"
                                             itemValue="#{municipality}"
                                             converter="municipalityConverter"
-                                            value="#{subscriberAddController.dataSource.birthCity}"
+                                            value="#{subscriberAddController.subscriberDataSource.birthCity}"
                                             required="true"
                                             requiredMessage="#{lang['validation.subscriber.birth.city.mandatory']}">
                                 <p:ajax process="@this"
                                         partialSubmit="true"
                                         update="subscriberVatCode"
-                                        listener="#{subscriberAddController.generateVatCode}"/>
+                                        listener="#{subscriberAddController.generateVatCode()}"/>
                             </p:autoComplete>
                         </div>
                         <div class="large-2 cell field">
                             <p:outputLabel for="subscriberBirthDate"
                                            value="#{lang['model.subscriber.birth.date']}"/>
                             <p:calendar id="subscriberBirthDate"
-                                        value="#{subscriberAddController.dataSource.birthDate}"
+                                        tabindex="4"
+                                        value="#{subscriberAddController.subscriberDataSource.birthDate}"
                                         mask="true" pattern="#{lang['date.pattern']}"
                                         required="true"
                                         requiredMessage="#{lang['validation.subscriber.birth.date.mandatory']}">
                                 <p:ajax process="@this"
                                         partialSubmit="true"
                                         update="subscriberVatCode"
-                                        listener="#{subscriberAddController.generateVatCode}"/>
+                                        listener="#{subscriberAddController.generateVatCode()}"/>
                             </p:calendar>
                         </div>
                         <div class="large-1 cell field">
@@ -97,7 +103,8 @@
                             <p:outputLabel for="subscriberGender"
                                            value="#{lang['model.subscriber.gender']}"/>
                             <p:selectOneMenu id="subscriberGender"
-                                             value="#{subscriberAddController.dataSource.gender}"
+                                             tabindex="5"
+                                             value="#{subscriberAddController.subscriberDataSource.gender}"
                                              required="true"
                                              requiredMessage="#{lang['validation.subscriber.gender.mandatory']}">
                                 <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
@@ -120,6 +127,7 @@
                             <p:outputLabel for="subscriberCity"
                                            value="#{lang['model.subscriber.city']}"/>
                             <p:autoComplete id="subscriberCity"
+                                            tabindex="6"
                                             minQueryLength="3"
                                             maxResults="5"
                                             completeMethod="#{subscriberAddController.autocompleteMunicipality}"
@@ -127,7 +135,7 @@
                                             itemLabel="#{municipality.name}"
                                             itemValue="#{municipality}"
                                             converter="municipalityConverter"
-                                            value="#{subscriberAddController.dataSource.city}"
+                                            value="#{subscriberAddController.subscriberDataSource.city}"
                                             required="true"
                                             requiredMessage="#{lang['validation.subscriber.city.mandatory']}"/>
                         </div>
@@ -135,7 +143,8 @@
                             <p:outputLabel for="subscriberAddress"
                                            value="#{lang['model.subscriber.address']}"/>
                             <p:inputText id="subscriberAddress"
-                                         value="#{subscriberAddController.dataSource.address}"
+                                         tabindex="7"
+                                         value="#{subscriberAddController.subscriberDataSource.address}"
                                          required="true"
                                          requiredMessage="#{lang['validation.subscriber.address.mandatory']}"/>
 
@@ -144,7 +153,8 @@
                             <p:outputLabel for="subscriberPhone"
                                            value="#{lang['model.subscriber.phone']}"/>
                             <p:inputText id="subscriberPhone"
-                                         value="#{subscriberAddController.dataSource.phone}"
+                                         tabindex="8"
+                                         value="#{subscriberAddController.subscriberDataSource.phone}"
                                          required="true"
                                          requiredMessage="#{lang['validation.subscriber.phone.mandatory']}"/>
                         </div>
@@ -154,7 +164,8 @@
                             <p:outputLabel for="subscriberEmail"
                                            value="#{lang['model.subscriber.email']}"/>
                             <p:inputText id="subscriberEmail"
-                                         value="#{subscriberAddController.dataSource.email}"/>
+                                         tabindex="9"
+                                         value="#{subscriberAddController.subscriberDataSource.email}"/>
                         </div>
                     </div>
                 </p:panel>
@@ -165,7 +176,8 @@
                             <p:outputLabel for="subscriberDocumentType"
                                            value="#{lang['model.subscriber.document.type']}"/>
                             <p:selectOneMenu id="subscriberDocumentType"
-                                             value="#{subscriberAddController.dataSource.documentType}">
+                                             tabindex="10"
+                                             value="#{subscriberAddController.subscriberDataSource.documentType}">
                                 <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
                                 <f:selectItems value="#{subscriberAddController.identityDocumentTypes}" var="d"
                                                itemLabel="#{lang[d.labelKey]}"
@@ -176,7 +188,8 @@
                             <p:outputLabel for="subscriberDocumentNumber"
                                            value="#{lang['model.subscriber.document.number']}"/>
                             <p:inputText id="subscriberDocumentNumber"
-                                         value="#{subscriberAddController.dataSource.documentNumber}"/>
+                                         tabindex="11"
+                                         value="#{subscriberAddController.subscriberDataSource.documentNumber}"/>
                         </div>
                     </div>
                 </p:panel>
@@ -187,7 +200,8 @@
                             <p:outputLabel for="subscriberType"
                                            value="#{lang['model.subscriber.card.type']}"/>
                             <p:selectOneMenu id="subscriberType"
-                                             value="#{subscriberAddController.dataSource.subscriberType}"
+                                             tabindex="12"
+                                             value="#{subscriberAddController.cardDataSource.type}"
                                              required="true"
                                              requiredMessage="#{lang['validation.subscriber.type.mandatory']}">
                                 <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
@@ -199,23 +213,23 @@
                         <div class="large-2 cell field">
                             <p:outputLabel for="subscriberValidFrom"
                                            value="#{lang['model.subscriber.card.valid.from']}"/>
-                            <p:calendar id="subscriberValidFrom"
-                                        value="#{subscriberAddController.dataSource.validFrom}"
-                                        mask="true"
-                                        pattern="#{lang['date.pattern']}"
-                                        required="true"
-                                        requiredMessage="#{lang['validation.subscriber.valid.from.mandatory']}"/>
+
+                            <h:outputText id="subscriberValidFrom"
+                                          styleClass="text-underline"
+                                          value="#{subscriberAddController.getDate(subscriberAddController.cardDataSource.validFrom)}"/>
                         </div>
                     </div>
                 </p:panel>
 
                 <div class="grid-x paddingV10">
                     <p:commandButton icon="fa fa-user-plus"
+                                     tabindex="14"
                                      styleClass="right"
                                      title="#{lang['label.add']}"
                                      value="#{lang['label.add']}"
                                      actionListener="#{subscriberAddController.register}"
                                      update="subscriberAddPanel">
+
                         <p:confirm
                                 header="#{lang['header.confirm']}"
                                 message="#{lang['msg.info.subscriber.registration.confirm']}"
@@ -232,7 +246,7 @@
                                  global="true"
                                  showEffect="fade" hideEffect="fade">
                     <div class="grid-x">
-                        <div class="cell large-offset-9">
+                        <div class="cell large-12">
                             <p:commandButton value="#{lang['label.yes']}" type="button"
                                              styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
                             <p:commandButton value="#{lang['label.no']}" type="button"
@@ -242,8 +256,6 @@
                 </p:confirmDialog>
             </h:form>
         </p:panel>
-
-
     </ui:composition>
 </h:body>
 </html>

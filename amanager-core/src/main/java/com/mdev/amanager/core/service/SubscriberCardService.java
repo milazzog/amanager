@@ -1,9 +1,12 @@
 package com.mdev.amanager.core.service;
 
-import com.mdev.amanager.persistence.domain.enums.SubscriberType;
+import com.mdev.amanager.core.datasource.SubscriberCardDataSource;
+import com.mdev.amanager.core.service.exceptions.ServiceException;
+import com.mdev.amanager.core.service.model.SubscriberFeeCalculationResult;
 import com.mdev.amanager.persistence.domain.model.Sequences;
 import com.mdev.amanager.persistence.domain.model.Subscriber;
 import com.mdev.amanager.persistence.domain.model.SubscriberCard;
+import com.mdev.amanager.persistence.domain.model.SubscriberFee;
 import com.mdev.amanager.persistence.domain.repository.SubscriberCardRepository;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,37 +34,34 @@ public class SubscriberCardService implements Sequences {
     @Autowired
     private SequenceService sequenceService;
 
-    @Transactional(rollbackFor = {RuntimeException.class, SubcscriberCardCreationException.class})
-    public SubscriberCard create(Subscriber subscriber, SubscriberType type, Date validFrom) throws SubscriberCardServiceException {
+    @Autowired
+    private SubscriberFeeService subscriberFeeService;
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public SubscriberCard create(SubscriberCardDataSource subscriberCardDataSource) throws ServiceException {
 
         try {
 
-            if(Objects.isNull(subscriber)){
-                throw new IllegalArgumentException("subscriber is null.");
-            }
+            subscriberCardDataSource.setCardNumber(generateCardNumber());
+            subscriberCardDataSource.setCreatedAt(new Date());
 
-            if(Objects.isNull(type)){
-                throw new IllegalArgumentException("type is null.");
-            }
-
-            if(Objects.isNull(validFrom)){
-                throw new IllegalArgumentException("validFrom is null.");
-            }
+            Subscriber subscriber = subscriberCardDataSource.getSubscriber();
+            SubscriberCard sc = subscriberCardDataSource.validate();
 
             logger.info(String.format("searching for existing %s for subscriber [%s]...", SubscriberCard.class.getSimpleName(), subscriber.getVatCode()));
 
             Set<SubscriberCard> cards = subscriber.getCards();
 
-            if(CollectionUtils.isEmpty(cards)){
+            if (CollectionUtils.isEmpty(cards)) {
                 logger.info(String.format("no existing %s for subscriber [%s] found.", SubscriberCard.class.getSimpleName(), subscriber.getVatCode()));
-            }else {
+            } else {
                 logger.info(String.format("found %d existing %s for subscriber [%s].", cards.size(), SubscriberCard.class.getSimpleName(), subscriber.getVatCode()));
-                for(SubscriberCard c : cards){
-                    if(Objects.isNull(c.getDisabledAt())){
+                for (SubscriberCard c : cards) {
+                    if (Objects.isNull(c.getDisabledAt())) {
                         logger.info(String.format("invalidating %s with card number [%s] for subscriber [%s] .", SubscriberCard.class.getSimpleName(), c.getCardNumber(), subscriber.getVatCode()));
                         c.setDisabledAt(new Date());
                         subscriberCardRepository.save(c);
-                    }else {
+                    } else {
                         logger.info(String.format("%s with card number [%s] is already invalid for subscriber [%s] .", SubscriberCard.class.getSimpleName(), c.getCardNumber(), subscriber.getVatCode()));
                     }
                 }
@@ -69,12 +69,6 @@ public class SubscriberCardService implements Sequences {
 
             logger.info(String.format("creating %s for subscriber [%s].", SubscriberCard.class.getSimpleName(), subscriber.getVatCode()));
 
-            SubscriberCard sc = new SubscriberCard();
-            sc.setType(type);
-            sc.setCardNumber(generateCardNumber());
-            sc.setCreatedAt(new Date());
-            sc.setValidFrom(validFrom);
-            sc.setSubscriber(subscriber);
             subscriberCardRepository.save(sc);
 
             logger.info(String.format("%s for subscriber [%s] successfully created with card number [%s] and id [%09d]", SubscriberCard.class.getSimpleName(), subscriber.getVatCode(), sc.getCardNumber(), sc.getId()));
@@ -82,7 +76,43 @@ public class SubscriberCardService implements Sequences {
 
         } catch (Exception e) {
             logger.error(String.format("error occurred while generating %s:", SubscriberCard.class.getSimpleName()), e);
-            throw new SubcscriberCardCreationException(e);
+            throw new ServiceException(e);
+        }
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public SubscriberCard disable(SubscriberCard subscriberCard) throws ServiceException {
+        if (Objects.isNull(subscriberCard)) {
+            throw new ServiceException(ServiceException.NULL_OBJECT);
+        }
+        return disable(subscriberCard.getId());
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public SubscriberCard disable(Long subscriberCardId) throws ServiceException {
+        if (Objects.isNull(subscriberCardId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
+        }
+        try {
+            SubscriberCard subscriberCard = subscriberCardRepository.find(subscriberCardId);
+            if (Objects.nonNull(subscriberCard.getDisabledAt())) {
+                throw new ServiceException(String.format("can't disable %s with id [%09d]: already disabled.", SubscriberCard.class.getSimpleName(), subscriberCardId));
+            }
+            subscriberCard.setDisabledAt(new Date());
+            return subscriberCardRepository.merge(subscriberCard);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while disabling %s with id [%09d]", SubscriberCard.class.getSimpleName(), subscriberCardId), e);
+        }
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public SubscriberCard addSubscriberFee(SubscriberFeeCalculationResult calculationResult, SubscriberCard subscriberCard) throws ServiceException {
+        try {
+            SubscriberFee fee = subscriberFeeService.create(subscriberCard, calculationResult);
+            subscriberCard.getFees().add(fee);
+            return subscriberCardRepository.merge(subscriberCard);
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while adding %s", SubscriberFee.class.getSimpleName()), e);
         }
     }
 
@@ -91,44 +121,6 @@ public class SubscriberCardService implements Sequences {
         Long value = sequenceService.getNextValue(SUBSCRIBER_CARD);
 
         return StringUtils.leftPad(String.valueOf(value), SubscriberCard.CARD_NUMBER_LENGTH, '0');
-    }
-
-    public class SubscriberCardServiceException extends Exception {
-
-        public SubscriberCardServiceException() {
-            super();
-        }
-
-        public SubscriberCardServiceException(String message) {
-            super(message);
-        }
-
-        public SubscriberCardServiceException(Throwable cause) {
-            super(cause);
-        }
-
-        public SubscriberCardServiceException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    public class SubcscriberCardCreationException extends SubscriberCardServiceException {
-
-        public SubcscriberCardCreationException() {
-            super();
-        }
-
-        public SubcscriberCardCreationException(String message) {
-            super(message);
-        }
-
-        public SubcscriberCardCreationException(Throwable cause) {
-            super(cause);
-        }
-
-        public SubcscriberCardCreationException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
 
 }

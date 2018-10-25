@@ -1,5 +1,6 @@
 package org.mdev.amanager.test.service;
 
+import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.persistence.domain.enums.IdentityDocumentType;
 import com.mdev.amanager.persistence.domain.enums.SubscriberType;
 import com.mdev.amanager.persistence.domain.model.Municipality;
@@ -41,7 +42,7 @@ public class SubscriberServiceTest {
     }
 
     @Test
-    public void test_create_should_pass() throws ParseException, SubscriberService.SubscriberServiceException {
+    public void test_create_should_pass() throws ParseException, ServiceException {
 
         SubscriberType subscriberType = SubscriberType.SUPPORTER;
         String vatCode = "MLZGPP88L05G371c";

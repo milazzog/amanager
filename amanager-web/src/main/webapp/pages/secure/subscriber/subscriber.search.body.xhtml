@@ -44,7 +44,7 @@
                 <p:column headerText="#{lang['model.subscriber.phone']}" styleClass="th-10">
                     <h:outputText value="#{subscriber.phone}"/>
                 </p:column>
-                <p:column headerText="#{lang['label.action']}" styleClass="th-10">
+                <p:column headerText="#{lang['label.action']}" styleClass="th-10 centered">
                     <p:commandButton icon="fa fa-info"
                                      title="#{lang['label.show.details']}"
                                      actionListener="#{subscriberSearchController.loadSubscriberDetails(subscriber)}"
@@ -52,9 +52,20 @@
                                      update="subscriberDetailDialog"/>
                     <p:commandButton icon="fa fa-edit"
                                      title="#{lang['label.edit']}"
-                                     actionListener="#{subscriberSearchController.loadSubscriberDetails(subscriber)}"
+                                     actionListener="#{subscriberEditController.setSubscriber(subscriber)}"
                                      oncomplete="PF('subscriberEditDialog').show()"
                                      update="subscriberEditDialog"/>
+                    <p:commandButton icon="fa fa-credit-card"
+                                     title="#{lang['label.subscriber.cards']}"
+                                     actionListener="#{subscriberCardController.setSubscriber(subscriber)}"
+                                     oncomplete="PF('subscriberCardDialog').show()"
+                                     update="subscriberCardDialog"/>
+                    <p:commandButton icon="fa fa-retweet"
+                                     title="#{lang['label.subscriber.disable']}"
+                                     actionListener="#{subscriberSuspensionController.setSubscriber(subscriber)}"
+                                     oncomplete="PF('subscriberSuspensionDialog').show()"
+                                     update="subscriberSuspensionDialog"/>
+
                 </p:column>
             </p:dataTable>
         </p:panel>
@@ -80,22 +91,73 @@
         </p:dialog>
 
         <p:dialog id="subscriberEditDialog"
-                  header="#{subscriberDetailController.header}"
+                  header="#{subscriberEditController.header}"
                   widgetVar="subscriberEditDialog"
                   width="80%"
                   position="center"
                   resizable="false"
                   draggable="false">
+            <p:ajax event="close" update="subscriberSearchResultPanel"
+                    listener="#{subscriberSearchController.search()}"/>
             <ui:decorate template="/pages/secure/subscriber/subscriber.edit.form.xhtml">
-                <ui:define name="actionButtons">
-                    <div class="grid-x paddingV10">
+                <ui:define name="additionalActionButton">
                         <p:commandButton icon="fa fa-remove"
                                          styleClass="right"
                                          title="#{lang['label.close']}"
                                          value="#{lang['label.close']}"
-                                         onclick="PF('subscriberDetailDialog').hide()"/>
-                    </div>
+                                         onclick="PF('subscriberEditDialog').hide()"/>
                 </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+        <p:dialog id="subscriberCardDialog"
+                  header="#{subscriberCardController.title}"
+                  widgetVar="subscriberCardDialog"
+                  width="60%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <p:ajax event="close" update="subscriberSearchResultPanel"
+                    listener="#{subscriberSearchController.search()}"/>
+            <ui:decorate template="/pages/secure/subscriber/subscriber.card.form.xhtml">
+                <ui:define name="additionalActionButton">
+                    <p:commandButton icon="fa fa-remove"
+                                     styleClass="right"
+                                     title="#{lang['label.close']}"
+                                     value="#{lang['label.close']}"
+                                     onclick="PF('subscriberCardDialog').hide()"/>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+        <p:dialog id="subscriberSuspensionDialog"
+                  header="#{subscriberSuspensionController.header}"
+                  widgetVar="subscriberSuspensionDialog"
+                  width="50%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <p:ajax event="close" update="subscriberSearchResultPanel"
+                    listener="#{subscriberSearchController.search()}"/>
+            <ui:decorate template="/pages/secure/subscriber/subscriber.suspension.form.xhtml">
+                <ui:param name="componentToUpdate" value="subscriberSuspensionDialog"/>
+
+                <ui:define name="disableAdditionalActionButton">
+                    <p:commandButton icon="fa fa-remove"
+                                     styleClass="right"
+                                     title="#{lang['label.close']}"
+                                     value="#{lang['label.close']}"
+                                     onclick="PF('subscriberSuspensionDialog').hide()"/>
+                </ui:define>
+
+                <ui:define name="reactivateAdditionalActionButton">
+                    <p:commandButton icon="fa fa-remove"
+                                     styleClass="right"
+                                     title="#{lang['label.close']}"
+                                     value="#{lang['label.close']}"
+                                     onclick="PF('subscriberSuspensionDialog').hide()"/>
+                </ui:define>
+
             </ui:decorate>
         </p:dialog>
 

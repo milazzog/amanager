@@ -49,7 +49,7 @@ public class SubscriberCard implements Identifiable{
     @Column(name = "DISABLED_AT")
     private Date disabledAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "SUBSCRIBER", foreignKey = @ForeignKey(name = "FK_SUBSCRIBER_CARD_SUBSCRIBER"))
     private Subscriber subscriber;
 

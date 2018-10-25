@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<h:body>
+
+    <!--@elvariable id="fee" type="com.mdev.amanager.persistence.domain.model.SubscriberFee"-->
+
+    <ui:composition>
+
+        <p:panel id="subscriberCardPanel">
+            <h:form id="subscriberCardForm">
+
+                <p:accordionPanel activeIndex="0">
+
+                    <c:forEach items="#{subscriberCardController.cards}" var="card">
+                        <p:tab id="subscriberCardTab_#{card.cardNumber}"
+                               title="#{subscriberCardController.getHeader(card)}"
+                               titleStyleClass="#{subscriberCardController.getStyle(card)}">
+                            <div class="grid-x">
+                                <div class="large-2 cell field">
+                                    <p:outputLabel for="subscriberCardCreatedAt"
+                                                   value="#{lang['model.subscriber.card.created.at']}"/>
+                                    <h:outputText id="subscriberCardCreatedAt"
+                                                  styleClass="text-underline"
+                                                  value="#{subscriberCardController.getDate(card.createdAt)}"/>
+                                </div>
+                                <div class="large-2 cell field">
+                                    <p:outputLabel for="subscriberCardTyoe"
+                                                   value="#{lang['model.subscriber.card.type']}"/>
+                                    <h:outputText id="subscriberCardTyoe"
+                                                  styleClass="text-underline"
+                                                  value="#{lang[card.type.labelKey]}"/>
+                                </div>
+                                <div class="large-2 cell field">
+                                    <p:outputLabel for="subscriberCardValidFrom"
+                                                   value="#{lang['model.subscriber.card.valid.from']}"/>
+                                    <h:outputText id="subscriberCardValidFrom"
+                                                  styleClass="text-underline"
+                                                  value="#{subscriberCardController.getDate(card.validFrom)}"/>
+                                </div>
+                                <div class="large-2 cell field">
+                                    <p:outputLabel for="subscriberVatDisabledAt"
+                                                   value="#{lang['model.subscriber.card.disabled.at']}"/>
+                                    <h:outputText id="subscriberVatDisabledAt"
+                                                  styleClass="text-underline"
+                                                  value="#{subscriberCardController.getDate(card.disabledAt)}"/>
+                                </div>
+                                <div class="large-3 cell field">
+                                    <p:commandButton icon="fa fa-euro"
+                                                     rendered="#{card.disabledAt == null}"
+                                                     styleClass="right top14"
+                                                     title="#{lang['label.add.fee']}"
+                                                     value="#{lang['label.add.fee']}"
+                                                     onclick="PF('subscriberFeeAddDialog').show()"/>
+                                </div>
+                            </div>
+
+                            <div class="paddingV10">
+                                <p:dataTable id="feeTable"
+                                             value="#{subscriberCardController.getFees(card)}"
+                                             var="fee"
+                                             emptyMessage="#{lang['msg.info.table.empty']}" widgetVar="feeTable">
+
+                                    <p:column headerText="#{lang['model.subscriber.fee.valid.from']}">
+                                        <h:outputText
+                                                value="#{fee.validfrom}"/>
+                                    </p:column>
+                                    <p:column headerText="#{lang['model.subscriber.fee.valid.to']}">
+                                        <h:outputText
+                                                value="#{fee.validTo}"/>
+                                    </p:column>
+                                    <p:column headerText="#{lang['model.credit.note.amount']}">
+                                        <h:outputText
+                                                value="#{fee.creditNote.amount}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </p:tab>
+                    </c:forEach>
+                </p:accordionPanel>
+                <div class="grid-x paddingV10">
+                    <div class="cell large-12">
+                        <ui:insert name="additionalActionButton"/>
+                    </div>
+                </div>
+            </h:form>
+        </p:panel>
+
+        <p:dialog id="subscriberFeeAddDialog"
+                  header="#{lang['header.subscriber.fee.add']}"
+                  widgetVar="subscriberFeeAddDialog"
+                  width="60%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <p:ajax event="close" update="subscriberCardForm" listener="#{subscriberCardController.refresh()}"/>
+
+            <h:form id="subscriberFeeAddForm">
+
+                <div class="grid-x">
+                    <div class="large-2 cell field">
+                        <p:outputLabel for="subscriberFeeInterval"
+                                       value="#{lang['model.subscriber.fee.time.interval']}"/>
+                        <p:spinner id="subscriberFeeInterval"
+                                   onkeypress="return false;"
+                                   value="#{subscriberCardController.subscriberFeeCalculationResult.interval}">
+                            <p:ajax process="@this"
+                                    partialSubmit="true"
+                                    update="subscriberFeeAddForm"
+                                    listener="#{subscriberCardController.updateTotal()}"/>
+                        </p:spinner>
+                    </div>
+                    <div class="large-1 cell field off24">
+                        <h:outputText id="subscriberFeeIntervalTipe"
+                                      value="#{lang[subscriberCardController.subscriberFeeCalculationResult.feeConfig.timeInterval.timeUnitLabel]}"/>
+                    </div>
+                    <div class="large-3 cell field">
+                        <p:outputLabel for="subscriberFeeStart"
+                                       value="#{lang['model.subscriber.fee.valid.from']}"/>
+                        <h:inputText id="subscriberFeeStart"
+                                     disabled="true"
+                                     value="#{subscriberCardController.getDate(subscriberCardController.subscriberFeeCalculationResult.from)}"/>
+                    </div>
+                    <div class="large-3 cell field">
+                        <p:outputLabel for="subscriberFeeEnd"
+                                       value="#{lang['model.subscriber.fee.valid.to']}"/>
+                        <h:inputText id="subscriberFeeEnd"
+                                     disabled="true"
+                                     value="#{subscriberCardController.getDate(subscriberCardController.subscriberFeeCalculationResult.to)}"/>
+                    </div>
+                    <div class="large-3 cell field">
+                        <p:outputLabel for="subscriberFeeAmount"
+                                       value="#{lang['model.credit.note.amount']}"/>
+                        <h:inputText id="subscriberFeeAmount"
+                                     disabled="true"
+                                     value="#{subscriberCardController.subscriberFeeCalculationResult.amount}"/>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="large-12 cell field">
+                        <p:commandButton icon="fa fa-euro"
+                                         rendered="#{card.disabledAt == null}"
+                                         styleClass="right top14"
+                                         title="#{lang['label.add']}"
+                                         value="#{lang['label.add']}"
+                                         actionListener="#{subscriberCardController.addFee()}"
+                                         oncomplete="PF('subscriberFeeAddDialog').hide()">
+                            <p:confirm
+                                    header="#{lang['header.confirm']}"
+                                    message="#{lang['msg.info.subscriber.registration.confirm']}"
+                                    icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-remove"
+                                         styleClass="right top14"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('subscriberFeeAddDialog').hide()"/>
+                    </div>
+                </div>
+                <p:confirmDialog id="confirm"
+                                 global="true"
+                                 showEffect="fade" hideEffect="fade">
+                    <div class="grid-x">
+                        <div class="cell large-12">
+                            <p:commandButton value="#{lang['label.yes']}" type="button"
+                                             styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
+                            <p:commandButton value="#{lang['label.no']}" type="button"
+                                             styleClass="ui-confirmdialog-no right" icon="fa fa-close"/>
+                        </div>
+                    </div>
+                </p:confirmDialog>
+            </h:form>
+
+        </p:dialog>
+
+    </ui:composition>
+</h:body>
+</html>

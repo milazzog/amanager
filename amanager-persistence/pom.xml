@@ -12,8 +12,8 @@
     <artifactId>amanager-persistence</artifactId>
 
     <properties>
-        <dep.hibernate>5.3.6.Final</dep.hibernate>
-        <dep.mysql>8.0.12</dep.mysql>
+        <dep.hibernate>5.3.7.Final</dep.hibernate>
+        <dep.mysql>8.0.13</dep.mysql>
         <dep.aspectj>1.9.1</dep.aspectj>
     </properties>
 

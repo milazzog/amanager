@@ -1,9 +1,10 @@
 package com.mdev.amanager.core.service;
 
+import com.mdev.amanager.core.datasource.SubscriberCardDataSource;
 import com.mdev.amanager.core.datasource.SubscriberDataSource;
-import com.mdev.amanager.persistence.domain.enums.IdentityDocumentType;
+import com.mdev.amanager.core.datasource.validation.MissingRequiredFieldException;
+import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.persistence.domain.enums.SubscriberType;
-import com.mdev.amanager.persistence.domain.model.Municipality;
 import com.mdev.amanager.persistence.domain.model.Subscriber;
 import com.mdev.amanager.persistence.domain.model.SubscriberCard;
 import com.mdev.amanager.persistence.domain.repository.SubscriberRepository;
@@ -31,100 +32,241 @@ public class SubscriberService {
     @Autowired
     private SubscriberCardService subscriberCardService;
 
-    @Autowired
-    private VatCodeService vatCodeService;
-
-    @Transactional(rollbackFor = {RuntimeException.class, SubscriberServiceException.class})
-    public Subscriber create(SubscriberDataSource dataSource) throws SubscriberServiceException {
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber create(SubscriberDataSource subscriberDataSource, SubscriberCardDataSource cardDataSource) throws ServiceException {
 
         try {
 
-            String vatCode = vatCodeService.getVatCode(dataSource.getLastName(), dataSource.getFirstName(), dataSource.getBirthDate(), dataSource.getGender(), dataSource.getBirthCity());
-            dataSource.setVatCode(vatCode);
+            subscriberDataSource.setRegistrationDate(new Date());
+            subscriberDataSource.setSuspended(false);
 
-            dataSource.validate();
+            Subscriber s = subscriberDataSource.validate();
+            ;
 
-            Subscriber s = new Subscriber();
-
-            logger.info(String.format("creating %s with first name [%s], last name [%s] and vat code [%s] of type [%s]", Subscriber.class.getSimpleName(), dataSource.getFirstName(), dataSource.getLastName(), vatCode, dataSource.getSubscriberType().name()));
-
-            s.setRegistrationDate(new Date());
-            s.setVatCode(dataSource.getVatCode());
-            s.setFirstName(dataSource.getFirstName());
-            s.setLastName(dataSource.getLastName());
-            s.setPhone(dataSource.getPhone());
-            s.setBirthCity(dataSource.getBirthCity());
-            s.setBirthDate(dataSource.getBirthDate());
-            s.setGender(dataSource.getGender());
-            s.setCity(dataSource.getCity());
-            s.setAddress(dataSource.getAddress());
-            s.setSuspended(false);
-
-            if (Objects.nonNull(dataSource.getDocumentType()) && StringUtils.isNotBlank(dataSource.getDocumentNumber())) {
-                s.setDocumentType(dataSource.getDocumentType());
-                s.setDocumentNumber(dataSource.getDocumentNumber());
-            }
-
-            if (StringUtils.isNotBlank(dataSource.getEmail())) {
-                s.setEmail(dataSource.getEmail());
-            }
+            logger.info(String.format("creating %s with first name [%s], last name [%s] and vat code [%s] of type [%s]", Subscriber.class.getSimpleName(), subscriberDataSource.getFirstName(), subscriberDataSource.getLastName(), subscriberDataSource.getVatCode(), cardDataSource.getType().name()));
 
             subscriberRepository.save(s);
 
-            SubscriberCard c = subscriberCardService.create(s, dataSource.getSubscriberType(), dataSource.getValidFrom());
+            cardDataSource.setSubscriber(s);
+
+            SubscriberCard c = subscriberCardService.create(cardDataSource);
 
             s.getCards().add(c);
 
             subscriberRepository.save(s);
 
-            logger.info(String.format("%s with first name [%s], last name [%s] and vat code [%s] of type [%s] successfully created with id [%09d]", Subscriber.class.getSimpleName(), s.getFirstName(), s.getLastName(), s.getVatCode(), dataSource.getSubscriberType().name(), s.getId()));
+            logger.info(String.format("%s with first name [%s], last name [%s] and vat code [%s] of type [%s] successfully created with id [%09d]", Subscriber.class.getSimpleName(), s.getFirstName(), s.getLastName(), s.getVatCode(), s.getActiveCard().getType().name(), s.getId()));
 
             return s;
 
         } catch (Exception e) {
             logger.error(String.format("error occurred while creating %s:", Subscriber.class.getSimpleName()), e);
-            throw new SubcscriberCreationException(e);
+            throw new ServiceException(e);
         }
 
 
     }
 
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber edit(Subscriber subscriber, SubscriberDataSource subscriberDataSource) throws ServiceException {
 
-    public class SubscriberServiceException extends Exception {
-
-        public SubscriberServiceException() {
-            super();
+        if (Objects.isNull(subscriber)) {
+            throw new ServiceException(ServiceException.NULL_OBJECT);
         }
 
-        public SubscriberServiceException(String message) {
-            super(message);
+        return edit(subscriber.getId(), subscriberDataSource);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber edit(Long subscriberId, SubscriberDataSource subscriberDataSource) throws ServiceException {
+
+        if (Objects.isNull(subscriberId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
         }
 
-        public SubscriberServiceException(Throwable cause) {
-            super(cause);
+        if (Objects.isNull(subscriberDataSource)) {
+            throw new ServiceException(String.format("can't edit a without %s as source.", SubscriberDataSource.class.getSimpleName()));
         }
 
-        public SubscriberServiceException(String message, Throwable cause) {
-            super(message, cause);
+        try {
+            subscriberDataSource.validate();
+        } catch (MissingRequiredFieldException e) {
+            throw new ServiceException("invalid data source state:", e);
+        }
+
+        try {
+
+            Subscriber subscriber = subscriberRepository.find(subscriberId);
+
+            subscriber.setVatCode(subscriberDataSource.getVatCode());
+            subscriber.setFirstName(subscriberDataSource.getFirstName());
+            subscriber.setLastName(subscriberDataSource.getLastName());
+            subscriber.setPhone(subscriberDataSource.getPhone());
+            subscriber.setBirthCity(subscriberDataSource.getBirthCity());
+            subscriber.setBirthDate(subscriberDataSource.getBirthDate());
+            subscriber.setGender(subscriberDataSource.getGender());
+            subscriber.setCity(subscriberDataSource.getCity());
+            subscriber.setAddress(subscriberDataSource.getAddress());
+            subscriber.setSuspended(subscriberDataSource.getSuspended());
+
+            if (Objects.nonNull(subscriberDataSource.getDocumentType()) && StringUtils.isNotBlank(subscriberDataSource.getDocumentNumber())) {
+                subscriber.setDocumentType(subscriberDataSource.getDocumentType());
+                subscriber.setDocumentNumber(subscriberDataSource.getDocumentNumber());
+            }
+
+            if (StringUtils.isNotBlank(subscriberDataSource.getEmail())) {
+                subscriber.setEmail(subscriberDataSource.getEmail());
+            }
+
+            return subscriberRepository.merge(subscriber);
+
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while performing edit on %s with id [%09d]:", Subscriber.class.getSimpleName(), subscriberId), e);
         }
     }
 
-    public class SubcscriberCreationException extends SubscriberServiceException {
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber suspend(Subscriber subscriber) throws ServiceException {
+        if (Objects.isNull(subscriber)) {
+            throw new ServiceException(ServiceException.NULL_OBJECT);
+        }
+        return suspend(subscriber.getId());
+    }
 
-        public SubcscriberCreationException() {
-            super();
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber suspend(Long subscriberId) throws ServiceException {
+
+        if (Objects.isNull(subscriberId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
         }
 
-        public SubcscriberCreationException(String message) {
-            super(message);
-        }
+        try {
 
-        public SubcscriberCreationException(Throwable cause) {
-            super(cause);
-        }
+            Subscriber subscriber = subscriberRepository.find(subscriberId);
 
-        public SubcscriberCreationException(String message, Throwable cause) {
-            super(message, cause);
+            if (subscriber.isSuspended()) {
+                throw new ServiceException(String.format("can't suspend %s with id [%09d]: already suspended.", Subscriber.class.getSimpleName(), subscriberId));
+            }
+
+            subscriber.setSuspended(true);
+            subscriber = subscriberRepository.merge(subscriber);
+            return subscriber;
+
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while suspending %s with id [%09d]: ", Subscriber.class.getSimpleName(), subscriberId), e);
         }
     }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber disable(Subscriber subscriber) throws ServiceException {
+
+        if (Objects.isNull(subscriber)) {
+            throw new ServiceException(ServiceException.NULL_OBJECT);
+        }
+
+        return disable(subscriber.getId());
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber disable(Long subscriberId) throws ServiceException {
+
+        if (Objects.isNull(subscriberId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
+        }
+
+        try {
+
+            Subscriber s = suspend(subscriberId);
+
+            SubscriberCard activeCard = s.getActiveCard();
+
+            if (Objects.nonNull(activeCard)) {
+                subscriberCardService.disable(activeCard);
+            }
+
+            return s;
+
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while disabling %s with id [%09d]: ", Subscriber.class.getSimpleName(), subscriberId), e);
+        }
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber unsuspend(Subscriber subscriber, SubscriberType type, Date validFrom) throws ServiceException {
+        if (Objects.isNull(subscriber)) {
+            throw new ServiceException(ServiceException.NULL_OBJECT);
+        }
+        return unsuspend(subscriber.getId());
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    private Subscriber unsuspend(Long subscriberId) throws ServiceException {
+
+        if (Objects.isNull(subscriberId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
+        }
+
+        try {
+
+            Subscriber subscriber = subscriberRepository.find(subscriberId);
+
+            if (!subscriber.isSuspended()) {
+                throw new ServiceException(String.format("can't unsuspend %s with id [%09d]: already suspended.", Subscriber.class.getSimpleName(), subscriberId));
+            }
+
+            subscriber.setSuspended(false);
+            subscriber = subscriberRepository.merge(subscriber);
+            return subscriber;
+
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while unsuspending %s with id [%09d]: ", Subscriber.class.getSimpleName(), subscriberId), e);
+        }
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber reactivate(Subscriber subscriber, SubscriberType type, Date validFrom) throws ServiceException {
+
+        if (Objects.isNull(subscriber)) {
+            throw new ServiceException(ServiceException.NULL_OBJECT);
+        }
+
+        return reactivate(subscriber.getId(), type, validFrom);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public Subscriber reactivate(Long subscriberId, SubscriberType type, Date validFrom) throws ServiceException {
+
+        if (Objects.isNull(subscriberId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
+        }
+
+        try {
+
+            Subscriber s = unsuspend(subscriberId);
+
+            SubscriberCard activeCard = s.getActiveCard();
+
+            if (Objects.nonNull(activeCard)) {
+                subscriberCardService.disable(activeCard);
+            }
+
+            SubscriberCardDataSource cds = new SubscriberCardDataSource();
+
+            cds.setValidFrom(validFrom);
+            cds.setSubscriber(s);
+            cds.setType(type);
+
+            SubscriberCard sc = subscriberCardService.create(cds);
+
+            s.getCards().add(sc);
+
+            return subscriberRepository.merge(s);
+
+        } catch (Exception e) {
+            throw new ServiceException(String.format("error occurred while disabling %s with id [%09d]: ", Subscriber.class.getSimpleName(), subscriberId), e);
+        }
+    }
+
+
 }

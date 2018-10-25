@@ -37,7 +37,8 @@
                 <property.hibernate.dialect>org.hibernate.dialect.MySQL5Dialect</property.hibernate.dialect>
                 <property.hibernate.debug>false</property.hibernate.debug>
                 <property.jdbc.driver.class>com.mysql.jdbc.Driver</property.jdbc.driver.class>
-                <property.jdbc.url>jdbc:mysql://localhost:3306/amanager</property.jdbc.url>
+                <property.jdbc.url>jdbc:mysql://localhost:3306/amanager?zeroDateTimeBehavior=convertToNull
+                </property.jdbc.url>
                 <property.jdbc.usr>root</property.jdbc.usr>
                 <property.jdbc.pwd>root</property.jdbc.pwd>
 
@@ -149,6 +150,12 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
+            <version>${dep.primefaces}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.primefaces.extensions/primefaces-extensions -->
+        <dependency>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>primefaces-extensions</artifactId>
             <version>${dep.primefaces}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.enterprise/cdi-api -->

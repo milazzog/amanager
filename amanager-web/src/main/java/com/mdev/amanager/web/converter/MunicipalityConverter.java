@@ -25,7 +25,7 @@ public class MunicipalityConverter extends SpringBeanAutowiringSupport implement
         if(Objects.nonNull(value)) {
             try {
                 return municipalityRepository.find(Long.parseLong(value));
-            }catch (NumberFormatException e){
+            } catch (Exception e) {
                 return null;
             }
         }

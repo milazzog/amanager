@@ -1,4 +1,4 @@
-package com.mdev.amanager.web.controller;
+package com.mdev.amanager.web.controller.subscriber;
 
 import com.mdev.amanager.persistence.domain.enums.IdentityDocumentType;
 import com.mdev.amanager.persistence.domain.model.Municipality;

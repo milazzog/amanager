@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by gmilazzo on 06/10/2018.
@@ -35,17 +36,20 @@ public class VatCodeService {
 
     public String getVatCode(String lastName, String firstName, Date birthDate, Gender gender, Municipality birthCity) {
 
-        String partial = extractLastName(lastName) + extractFirstName(firstName) + extractDate(birthDate, gender) + birthCity.getBelfioreCode();
-        char[] chars = partial.toCharArray();
-        int sum = 0;
+        if (StringUtils.isNotBlank(lastName) && StringUtils.isNotBlank(firstName) && Objects.nonNull(birthDate) && Objects.nonNull(gender) && Objects.nonNull(birthCity) && StringUtils.isNotBlank(birthCity.getBelfioreCode())) {
+            String partial = extractLastName(lastName) + extractFirstName(firstName) + extractDate(birthDate, gender) + birthCity.getBelfioreCode();
+            char[] chars = partial.toCharArray();
+            int sum = 0;
 
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
-                chars[i] = (char) ((int) chars[i] + 17);
+            for (int i = 0; i < chars.length; i++) {
+                if (chars[i] >= '0' && chars[i] <= '9') {
+                    chars[i] = (char) ((int) chars[i] + 17);
+                }
+                sum += ((i + 1) % 2 == 0) ? pare[(int) chars[i] - 65] : spare[(int) chars[i] - 65];
             }
-            sum += ((i + 1) % 2 == 0) ? pare[(int) chars[i] - 65] : spare[(int) chars[i] - 65];
+            return partial + control[sum % 26];
         }
-        return partial + control[sum % 26];
+        return StringUtils.EMPTY;
     }
 
     private String extractLastName(String lastName) {

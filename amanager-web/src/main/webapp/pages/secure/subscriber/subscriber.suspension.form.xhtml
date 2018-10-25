@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+
+    <!--@elvariable id="municipality" type="com.mdev.amanager.persistence.domain.model.Municipality"-->
+
+    <ui:composition id="subscriberHandling">
+
+        <h:form id="subscriberSuspendForm">
+
+            <p:messages id="messages" closable="true"/>
+
+            <p:panel id="subscriberDisablePanel" rendered="#{not subscriberSuspensionController.currentDisabled}">
+                <div class="grid-x">
+                    <div class="large-12 cell">
+                        <p>#{lang['msg.explanation.deactivate']}</p>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="large-12 cell">
+                        <p:commandButton icon="fa fa-edit"
+                                         styleClass="right"
+                                         title="#{lang['label.disable']}"
+                                         value="#{lang['label.disable']}"
+                                         actionListener="#{subscriberSuspensionController.disable()}"
+                                         update="subscriberSuspendForm">
+                            <p:confirm
+                                    header="#{lang['header.confirm.action']}"
+                                    message="#{lang['msg.info.subscriber.disable.confirm']}"
+                                    icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <ui:insert name="disableAdditionalActionButton"/>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel id="subscriberReactivatePanel" rendered="#{subscriberSuspensionController.currentDisabled}">
+                <div class="grid-x">
+                    <div class="large-12 cell">
+                        <p>#{lang['msg.explanation.reactivate']}</p>
+                    </div>
+                </div>
+                <div class="grid-x">
+                    <div class="large-6 cell field">
+                        <p:outputLabel for="subscriberType"
+                                       value="#{lang['model.subscriber.card.type']}"/>
+                        <p:selectOneMenu id="subscriberType"
+                                         value="#{subscriberSuspensionController.type}"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.subscriber.type.mandatory']}">
+                            <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                            <f:selectItems value="#{subscriberSuspensionController.subscriberTypes}" var="t"
+                                           itemLabel="#{lang[t.labelKey]}"
+                                           itemValue="#{t}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="large-6 cell field">
+                        <p:outputLabel for="subscriberValidFrom"
+                                       value="#{lang['model.subscriber.card.valid.from']}"/>
+                        <h:outputText id="subscriberValidFrom"
+                                      styleClass="text-underline"
+                                      value="#{subscriberSuspensionController.getDate(subscriberSuspensionController.validFrom)}"/>
+                    </div>
+                </div>
+                <div class="grid-x paddingV10">
+                    <div class="large-12 cell">
+                        <p:commandButton icon="fa fa-edit"
+                                         styleClass="right"
+                                         title="#{lang['label.reactivate']}"
+                                         value="#{lang['label.reactivate']}"
+                                         actionListener="#{subscriberSuspensionController.reactivate()}"
+                                         update="subscriberSuspendForm">
+
+                            <p:confirm
+                                    header="#{lang['header.confirm.action']}"
+                                    message="#{lang['msg.info.subscriber.reactivate.confirm']}"
+                                    icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <ui:insert name="reactivateAdditionalActionButton"/>
+                    </div>
+
+                </div>
+            </p:panel>
+
+            <p:confirmDialog id="confirm"
+                             global="true"
+                             showEffect="fade" hideEffect="fade">
+                <div class="grid-x">
+                    <div class="cell large-12">
+                        <p:commandButton value="#{lang['label.yes']}" type="button"
+                                         styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
+                        <p:commandButton value="#{lang['label.no']}" type="button"
+                                         styleClass="ui-confirmdialog-no right" icon="fa fa-close"/>
+                    </div>
+                </div>
+            </p:confirmDialog>
+        </h:form>
+    </ui:composition>
+</h:body>
+</html>

@@ -6,16 +6,19 @@ import com.mdev.amanager.persistence.domain.enums.Gender;
 import com.mdev.amanager.persistence.domain.enums.IdentityDocumentType;
 import com.mdev.amanager.persistence.domain.enums.SubscriberType;
 import com.mdev.amanager.persistence.domain.model.Municipality;
+import com.mdev.amanager.persistence.domain.model.Subscriber;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by gmilazzo on 07/10/2018.
  */
-public class SubscriberDataSource extends DataSource{
+public class SubscriberDataSource extends DataSource<Subscriber> {
 
     @Required
-    private SubscriberType subscriberType;
+    private Date registrationDate;
     @Required
     private String vatCode;
     @Required
@@ -35,18 +38,75 @@ public class SubscriberDataSource extends DataSource{
     @Required
     private String address;
     @Required
-    private Date validFrom;
+    private Boolean suspended;
 
     private IdentityDocumentType documentType;
     private String documentNumber;
     private String email;
 
-    public SubscriberType getSubscriberType() {
-        return subscriberType;
+    @Override
+    protected Subscriber asData() {
+
+        Subscriber s = new Subscriber();
+
+        s.setRegistrationDate(getRegistrationDate());
+        s.setVatCode(getVatCode());
+        s.setFirstName(getFirstName());
+        s.setLastName(getLastName());
+        s.setPhone(getPhone());
+        s.setBirthCity(getBirthCity());
+        s.setBirthDate(getBirthDate());
+        s.setGender(getGender());
+        s.setCity(getCity());
+        s.setAddress(getAddress());
+        s.setSuspended(getSuspended());
+
+        if (Objects.nonNull(getDocumentType()) && StringUtils.isNotBlank(getDocumentNumber())) {
+            s.setDocumentType(getDocumentType());
+            s.setDocumentNumber(getDocumentNumber());
+        }
+
+        if (StringUtils.isNotBlank(getEmail())) {
+            s.setEmail(getEmail());
+        }
+
+        return s;
     }
 
-    public void setSubscriberType(SubscriberType subscriberType) {
-        this.subscriberType = subscriberType;
+    @Override
+    public void fromData(Subscriber data) {
+
+        if (Objects.nonNull(data)) {
+
+            setRegistrationDate(data.getRegistrationDate());
+            setVatCode(data.getVatCode());
+            setFirstName(data.getFirstName());
+            setLastName(data.getLastName());
+            setPhone(data.getPhone());
+            setBirthCity(data.getBirthCity());
+            setBirthDate(data.getBirthDate());
+            setGender(data.getGender());
+            setCity(data.getCity());
+            setAddress(data.getAddress());
+            setSuspended(data.isSuspended());
+
+            if (Objects.nonNull(data.getDocumentType()) && StringUtils.isNotBlank(data.getDocumentNumber())) {
+                setDocumentType(data.getDocumentType());
+                setDocumentNumber(data.getDocumentNumber());
+            }
+
+            if (StringUtils.isNotBlank(data.getEmail())) {
+                setEmail(data.getEmail());
+            }
+        }
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     public String getVatCode() {
@@ -121,12 +181,12 @@ public class SubscriberDataSource extends DataSource{
         this.address = address;
     }
 
-    public Date getValidFrom() {
-        return validFrom;
+    public Boolean getSuspended() {
+        return suspended;
     }
 
-    public void setValidFrom(Date validFrom) {
-        this.validFrom = validFrom;
+    public void setSuspended(Boolean suspended) {
+        this.suspended = suspended;
     }
 
     public IdentityDocumentType getDocumentType() {
