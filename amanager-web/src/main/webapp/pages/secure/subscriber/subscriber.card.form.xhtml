@@ -68,11 +68,11 @@
 
                                     <p:column headerText="#{lang['model.subscriber.fee.valid.from']}">
                                         <h:outputText
-                                                value="#{fee.validfrom}"/>
+                                                value="#{subscriberCardController.getDateTime(fee.validfrom)}"/>
                                     </p:column>
                                     <p:column headerText="#{lang['model.subscriber.fee.valid.to']}">
                                         <h:outputText
-                                                value="#{fee.validTo}"/>
+                                                value="#{subscriberCardController.getDateTime(fee.validTo)}"/>
                                     </p:column>
                                     <p:column headerText="#{lang['model.credit.note.amount']}">
                                         <h:outputText
@@ -98,7 +98,6 @@
                   position="center"
                   resizable="false"
                   draggable="false">
-            <p:ajax event="close" update="subscriberCardForm" listener="#{subscriberCardController.refresh()}"/>
 
             <h:form id="subscriberFeeAddForm">
 
@@ -149,10 +148,11 @@
                                          title="#{lang['label.add']}"
                                          value="#{lang['label.add']}"
                                          actionListener="#{subscriberCardController.addFee()}"
+                                         update="subscriberCardForm subscriberFeeAddDialog"
                                          oncomplete="PF('subscriberFeeAddDialog').hide()">
                             <p:confirm
                                     header="#{lang['header.confirm']}"
-                                    message="#{lang['msg.info.subscriber.registration.confirm']}"
+                                    message="#{subscriberCardController.confirmMessage}"
                                     icon="ui-icon-alert"/>
                         </p:commandButton>
                         <p:commandButton icon="fa fa-remove"

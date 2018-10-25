@@ -3,6 +3,7 @@ package com.mdev.amanager.web.controller.card;
 import com.mdev.amanager.core.service.SubscriberCardService;
 import com.mdev.amanager.core.service.SubscriberFeeService;
 import com.mdev.amanager.core.service.model.SubscriberFeeCalculationResult;
+import com.mdev.amanager.core.util.CommonUtil;
 import com.mdev.amanager.persistence.domain.model.Subscriber;
 import com.mdev.amanager.persistence.domain.model.SubscriberCard;
 import com.mdev.amanager.persistence.domain.model.SubscriberFee;
@@ -50,6 +51,11 @@ public class SubscriberCardController extends RootManagedBean {
         return Objects.nonNull(subscriber) ? resourceBundle.getString("header.subscriber.card.detail", subscriber.getFirstName(), subscriber.getLastName(), subscriber.getIdString()) : StringUtils.EMPTY;
     }
 
+    public String getConfirmMessage() {
+
+        return Objects.nonNull(subscriber) && Objects.nonNull(subscriberFeeCalculationResult) ? resourceBundle.getString("msg.info.subscriber.fee.add.confirm", CommonUtil.moneyStr(subscriberFeeCalculationResult.getAmount()), subscriber.getFirstName(), subscriber.getLastName(), subscriber.getIdString()) : StringUtils.EMPTY;
+    }
+
     public String getStyle(SubscriberCard card) {
 
         if (Objects.nonNull(card)) {
@@ -72,12 +78,10 @@ public class SubscriberCardController extends RootManagedBean {
 
         try {
             if (Objects.nonNull(activeCard)) {
-
                 subscriberFeeCalculationResult = subscriberFeeService.calculateAmount(subscriberFeeCalculationResult.getFrom(), subscriberFeeCalculationResult.getInterval(), activeCard.getType());
-
             }
         } catch (Exception e) {
-            //TODO: GESTIRE
+            logger.error("error occurred while updating total: ", e);
         }
     }
 
@@ -87,7 +91,7 @@ public class SubscriberCardController extends RootManagedBean {
             if (Objects.nonNull(activeCard)) {
 
                 subscriberCardService.addSubscriberFee(subscriberFeeCalculationResult, activeCard);
-
+                refresh();
             }
         } catch (Exception e) {
             //TODO: GESTIRE
