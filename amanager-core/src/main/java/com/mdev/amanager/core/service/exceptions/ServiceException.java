@@ -11,6 +11,10 @@ public class ServiceException extends Exception {
         return MessageFormat.format("parameter {0} is null.", paramName);
     }
 
+    public static String blankString(String paramName) {
+        return MessageFormat.format("parameter {0} is blank.", paramName);
+    }
+
     public static final String NULL_OBJECT = "null object as parameter.";
     public static final String DETACHED_INSTANCE = "detached instance as parameter.";
 
