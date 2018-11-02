@@ -13,9 +13,24 @@
             </div>
             <div class="large-9 cell">
                 <p:menubar styleClass="menu-top">
-                    <p:menuitem value="#{lang['page.subscriber.handling']}"
-                                outcome="/pages/secure/subscriber/subscriber.search.jsf"
-                                icon="fa fa-users"/>
+
+                    <p:submenu label="#{lang['page.subscriber.handling']}"
+                               icon="fa fa-users">
+                        <p:menuitem value="#{lang['menu.subscriber.search']}"
+                                    icon="fa fa-search"
+                                    outcome="/pages/secure/subscriber/subscriber.search.jsf"/>
+                        <p:menuitem value="#{lang['menu.subscriber.add']}"
+                                    icon="fa fa-user-plus"
+                                    outcome="/pages/secure/subscriber/subscriber.add.jsf"/>
+                    </p:submenu>
+
+
+                    <p:submenu label="#{lang['page.product.handling']}"
+                               icon="fa fa-codepen">
+                        <p:menuitem value="#{lang['page.raw.product.handling']}"
+                                    outcome="/pages/secure/product/raw.product.jsf"
+                                    icon="fa fa-archive"/>
+                    </p:submenu>
                 </p:menubar>
             </div>
             <div class="large-2 cell">
@@ -27,7 +42,8 @@
                         <h:outputText value="#{loginController.getLoggedInUser().username}"/>
                     </div>
                     <div class="large-2 cell">
-                        <p:commandButton icon="fa fa-power-off" action="#{loginController.logout()}" ajax="false" styleClass="button-logout"/>
+                        <p:commandButton icon="fa fa-power-off" action="#{loginController.logout()}" ajax="false"
+                                         styleClass="button-logout"/>
                     </div>
 
                 </div>

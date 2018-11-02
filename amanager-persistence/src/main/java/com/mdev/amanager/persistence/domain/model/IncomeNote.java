@@ -33,8 +33,40 @@ public class IncomeNote implements Identifiable {
     @Column(name = "CLOSED_AT", nullable = false)
     private Date closedAt;
 
-    @Id
+    @Override
     public Long getId() {
         return id;
+    }
+
+    public Set<SaleAct> getSaleActs() {
+        return saleActs;
+    }
+
+    public void setSaleActs(Set<SaleAct> saleActs) {
+        this.saleActs = saleActs;
+    }
+
+    public CreditNote getCreditNote() {
+        return creditNote;
+    }
+
+    public void setCreditNote(CreditNote creditNote) {
+        this.creditNote = creditNote;
+    }
+
+    public Date getOpenedAt() {
+        return openedAt;
+    }
+
+    public void setOpenedAt(Date openedAt) {
+        this.openedAt = openedAt;
+    }
+
+    public Date getClosedAt() {
+        return closedAt;
+    }
+
+    public void setClosedAt(Date closedAt) {
+        this.closedAt = closedAt;
     }
 }

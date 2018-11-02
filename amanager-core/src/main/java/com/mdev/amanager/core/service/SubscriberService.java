@@ -41,7 +41,6 @@ public class SubscriberService {
             subscriberDataSource.setSuspended(false);
 
             Subscriber s = subscriberDataSource.validate();
-            ;
 
             logger.info(String.format("creating %s with first name [%s], last name [%s] and vat code [%s] of type [%s]", Subscriber.class.getSimpleName(), subscriberDataSource.getFirstName(), subscriberDataSource.getLastName(), subscriberDataSource.getVatCode(), cardDataSource.getType().name()));
 

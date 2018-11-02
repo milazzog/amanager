@@ -12,9 +12,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "RAW_PRODUCT_REGISTRY")
-@NamedQueries({
-        @NamedQuery(name = "raw.product.find.by.type", query = "from RawProduct rp where rp.type = :type")
-})
 public class RawProductRegistry implements Identifiable {
 
     @Id

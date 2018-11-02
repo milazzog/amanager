@@ -11,9 +11,6 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "WITHDRAWAL_ORDER")
-@NamedQueries({
-        @NamedQuery(name = "raw.product.find.by.type", query = "from RawProduct rp where rp.type = :type")
-})
 public class WithdrawalOrder implements Identifiable {
 
     @Id

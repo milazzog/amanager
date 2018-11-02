@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+
+    <!--@elvariable id="componentToUpdate" type="java.lang.String"-->
+
+    <ui:composition>
+
+        <p:panel id="rawProductEditPanel">
+            <h:form id="rawProductEditForm">
+
+                <p:messages id="messages" closable="true"/>
+
+                <p:panel id="rawProductDataPanel">
+                    <div class="grid-x">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="rawProductName"
+                                           value="#{lang['model.raw.product.name']}"/>
+                            <p:inputText id="rawProductName"
+                                         value="#{rawProductController.rawProductDataSource.name}"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.raw.product.name.mandatory']}">
+                            </p:inputText>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="rawProductType"
+                                           value="#{lang['model.raw.product.type']}"/>
+                            <p:selectOneMenu id="rawProductType"
+                                             value="#{rawProductController.rawProductDataSource.type}"
+                                             required="true"
+                                             requiredMessage="#{lang['validation.raw.product.type.mandatory']}">
+                                <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{rawProductController.productTypes}" var="t"
+                                               itemLabel="#{lang[t.labelKey]}"
+                                               itemValue="#{t}"/>
+                                listener="#{subscriberEditController.generateVatCode}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="rawProductUM"
+                                           value="#{lang['model.raw.product.um']}"/>
+                            <p:selectOneMenu id="rawProductUM"
+                                             value="#{rawProductController.rawProductDataSource.um}"
+                                             required="true"
+                                             requiredMessage="#{lang['validation.raw.product.um.mandatory']}">
+                                <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{rawProductController.UM}" var="u"
+                                               itemLabel="#{lang[u.labelKey]}"
+                                               itemValue="#{u}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <div class="grid-x paddingV10">
+                    <div class="cell large-12">
+                        <p:commandButton icon="fa fa-edit"
+                                         styleClass="right"
+                                         title="#{lang['label.edit']}"
+                                         value="#{lang['label.edit']}"
+                                         actionListener="#{rawProductController.edit()}"
+                                         update="rawProductEditPanel #{componentToUpdate}">
+                            <p:confirm
+                                    header="#{lang['header.confirm']}"
+                                    message="#{lang['msg.info.raw.product.edit.confirm']}"
+                                    icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <ui:insert name="additionalButton"/>
+                    </div>
+                </div>
+
+                <p:confirmDialog id="confirm"
+                                 global="true"
+                                 showEffect="fade" hideEffect="fade">
+                    <div class="grid-x">
+                        <div class="cell large-12">
+                            <p:commandButton value="#{lang['label.yes']}" type="button"
+                                             styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
+                            <p:commandButton value="#{lang['label.no']}" type="button"
+                                             styleClass="ui-confirmdialog-no right" icon="fa fa-close"/>
+                        </div>
+                    </div>
+                </p:confirmDialog>
+            </h:form>
+        </p:panel>
+    </ui:composition>
+</h:body>
+</html>

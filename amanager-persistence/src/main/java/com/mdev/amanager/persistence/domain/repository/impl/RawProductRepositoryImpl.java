@@ -3,16 +3,23 @@ package com.mdev.amanager.persistence.domain.repository.impl;
 import com.mdev.amanager.persistence.domain.enums.ProductType;
 import com.mdev.amanager.persistence.domain.enums.UM;
 import com.mdev.amanager.persistence.domain.model.RawProduct;
+import com.mdev.amanager.persistence.domain.model.Subscriber;
+import com.mdev.amanager.persistence.domain.model.SubscriberCard;
 import com.mdev.amanager.persistence.domain.repository.RawProductRepository;
 import com.mdev.amanager.persistence.domain.repository.base.BaseRepository;
+import com.mdev.amanager.persistence.domain.repository.base.PredicateBuilder;
 import com.mdev.amanager.persistence.domain.repository.exceptions.EntityNotFoundException;
 import com.mdev.amanager.persistence.domain.repository.exceptions.EntityPersistenceException;
 import com.mdev.amanager.persistence.domain.repository.exceptions.MultipleEntityFoundException;
+import com.mdev.amanager.persistence.domain.repository.params.RawProductSearchParam;
+import com.mdev.amanager.persistence.domain.repository.params.base.StringMatcher;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**
@@ -67,6 +74,25 @@ public class RawProductRepositoryImpl extends BaseRepository<RawProduct> impleme
                 .setParameter("name", like(namePattern))
                 .setParameter("type", type)
                 .getResultList();
+    }
+
+    @Override
+    public List<RawProduct> findBySearchParam(RawProductSearchParam param) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RawProduct> query = cb.createQuery(RawProduct.class);
+        Root<RawProduct> ra = query.from(RawProduct.class);
+
+        Predicate[] p = PredicateBuilder
+                .getInstance(cb)
+                .append(param.getName(), ra.get("name"))
+                .append(param.getType(), ra.get("type"))
+                .append(param.getUm(), ra.get("um"))
+                .end();
+
+        query.where(p);
+
+        TypedQuery<RawProduct> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override

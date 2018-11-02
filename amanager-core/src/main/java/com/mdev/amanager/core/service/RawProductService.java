@@ -1,16 +1,22 @@
 package com.mdev.amanager.core.service;
 
+import com.mdev.amanager.core.datasource.RawProductDataSource;
+import com.mdev.amanager.core.datasource.SubscriberCardDataSource;
+import com.mdev.amanager.core.datasource.SubscriberDataSource;
 import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.persistence.domain.enums.ProductType;
 import com.mdev.amanager.persistence.domain.enums.UM;
 import com.mdev.amanager.persistence.domain.model.RawProduct;
+import com.mdev.amanager.persistence.domain.model.Subscriber;
 import com.mdev.amanager.persistence.domain.repository.RawProductRepository;
 import com.mdev.amanager.persistence.domain.repository.exceptions.EntityPersistenceException;
+import com.mdev.amanager.persistence.domain.repository.params.RawProductSearchParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -35,37 +41,52 @@ public class RawProductService {
         return rawProductRepository.findByNamePatternAndType(name, type);
     }
 
-    public RawProduct getOrAdd(String name, ProductType type, UM um) throws ServiceException {
+    public List<RawProduct> find(RawProductSearchParam param) {
+        return rawProductRepository.findBySearchParam(param);
+    }
 
-        if (StringUtils.isBlank(name)) {
-            throw new ServiceException(ServiceException.blankString("name"));
-        }
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public RawProduct create(RawProductDataSource rawProductDataSource) throws ServiceException {
 
-        if (Objects.isNull(type)) {
-            throw new ServiceException(ServiceException.nullParam("type"));
-        }
-
-        if (Objects.isNull(um)) {
-            throw new ServiceException(ServiceException.nullParam("um"));
-        }
-
-        RawProduct product;
         try {
-            logger.info(String.format("searching for %s with name %s", RawProduct.class.getSimpleName(), name));
-            product = rawProductRepository.findByName(name);
-            logger.info(String.format("found %s with name %s and id [%s]", RawProduct.class.getSimpleName(), product.getName(), product.getIdString()));
-        } catch (EntityPersistenceException e) {
-            logger.info(String.format("no %s found with name %s, adding new...", RawProduct.class.getSimpleName(), name));
-            product = new RawProduct();
-
-            product.setAddedAt(new Date());
-            product.setName(name);
-            product.setType(type);
-            product.setUm(um);
-
-            rawProductRepository.save(product);
-            logger.info(String.format("added %s with name %s and id [%s]", RawProduct.class.getSimpleName(), product.getName(), product.getIdString()));
+            rawProductDataSource.setAddedAt(new Date());
+            RawProduct rp = rawProductDataSource.validate();
+            rp.setName(StringUtils.upperCase(rp.getName()));
+            rawProductRepository.save(rp);
+            return rp;
+        } catch (Exception e) {
+            logger.error(String.format("error occurred while creating %s:", RawProduct.class.getSimpleName()), e);
+            throw new ServiceException(String.format("error occurred while creating %s:", RawProduct.class.getSimpleName()), e);
         }
-        return product;
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public RawProduct edit(RawProduct rawProduct, RawProductDataSource rawProductDataSource) throws ServiceException {
+
+        return edit(rawProduct.getId(), rawProductDataSource);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, ServiceException.class})
+    public RawProduct edit(Long rawProductId, RawProductDataSource rawProductDataSource) throws ServiceException {
+
+        if (Objects.isNull(rawProductId)) {
+            throw new ServiceException(ServiceException.DETACHED_INSTANCE);
+        }
+
+        if (Objects.isNull(rawProductDataSource)) {
+            throw new ServiceException(ServiceException.nullParam("rawProductDataSource"));
+        }
+
+        try {
+            rawProductDataSource.validate();
+            RawProduct rp = rawProductRepository.find(rawProductId);
+            rp.setName(StringUtils.upperCase(rawProductDataSource.getName()));
+            rp.setType(rawProductDataSource.getType());
+            rp.setUm(rawProductDataSource.getUm());
+            return rawProductRepository.merge(rp);
+        } catch (Exception e) {
+            logger.error(String.format("error occurred while editing %s:", RawProduct.class.getSimpleName()), e);
+            throw new ServiceException(String.format("error occurred while editing %s:", RawProduct.class.getSimpleName()), e);
+        }
     }
 }

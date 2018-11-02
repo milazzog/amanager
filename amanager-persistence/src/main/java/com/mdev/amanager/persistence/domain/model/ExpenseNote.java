@@ -10,9 +10,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "EXPENSE_NOTE")
-@NamedQueries({
-        @NamedQuery(name = "raw.product.find.by.type", query = "from RawProduct rp where rp.type = :type")
-})
 public class ExpenseNote implements Identifiable {
 
     @Id

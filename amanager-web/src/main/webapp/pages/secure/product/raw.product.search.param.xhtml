@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+
+    <!--@elvariable id="hideName" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideProductType" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideUM" type="java.lang.Boolean"-->
+    <!--@elvariable id="componentToUpdate" type="java.lang.String"-->
+
+    <ui:composition id="rawProductSearchParam">
+        <p:panel>
+            <h:form id="rawProductSearchParamForm">
+                <p:panel id="rawProductSearchParamPanel">
+                    <div class="grid-x">
+                        <c:if test="#{hideName == null or !hideName}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="rawProductName"
+                                               value="#{lang['model.raw.product.name']}"/>
+                                <p:inputText id="rawProductName"
+                                             value="#{rawProductController.searchParam.name.value}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideProductType == null or !hideProductType}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="rawProductType"
+                                               value="#{lang['model.raw.product.type']}"/>
+                                <p:selectOneMenu id="rawProductType"
+                                                 value="#{rawProductController.searchParam.type}">
+                                    <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{rawProductController.productTypes}" var="t"
+                                                   itemLabel="#{lang[t.labelKey]}"
+                                                   itemValue="#{t}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideUM == null or !hideUM}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="rawProductUM"
+                                               value="#{lang['model.raw.product.um']}"/>
+                                <p:selectOneMenu id="rawProductUM"
+                                                 value="#{rawProductController.searchParam.um}">
+                                    <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{rawProductController.UM}" var="u"
+                                                   itemLabel="#{lang[u.labelKey]}"
+                                                   itemValue="#{u}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </c:if>
+                        <div class="large-1 cell field">
+                            <p:commandButton icon="fa fa-search"
+                                             styleClass="top16"
+                                             title="#{lang['label.search']}"
+                                             actionListener="#{rawProductController.search()}"
+                                             update="#{componentToUpdate}"/>
+                            <p:commandButton icon="fa fa-remove"
+                                             styleClass="top16"
+                                             title="#{lang['label.reset']}"
+                                             actionListener="#{rawProductController.reset()}"
+                                             update="rawProductSearchParamPanel"/>
+                        </div>
+                        <ui:insert name="additionalButton"/>
+                    </div>
+                </p:panel>
+            </h:form>
+        </p:panel>
+    </ui:composition>
+</h:body>
+</html>

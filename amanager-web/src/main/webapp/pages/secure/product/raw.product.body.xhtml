@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+>
+<h:body>
+    <ui:composition id="rawProductHandling">
+
+        <ui:decorate template="/pages/secure/product/raw.product.search.param.xhtml">
+            <ui:param name="componentToUpdate" value="rawProductTable"/>
+            <ui:define name="additionalButton">
+                <p:commandButton icon="fa fa-plus-circle"
+                                 styleClass="top16 right"
+                                 title="#{lang['label.add']}"
+                                 value="#{lang['label.add']}"
+                                 actionListener="#{rawProductController.beforeAdd()}"
+                                 onclick="PF('rawProductAddDialog').show()"
+                />
+            </ui:define>
+        </ui:decorate>
+
+        <p:panel id="rawProductSearchResultPanel">
+
+            <p:dataTable id="rawProductTable"
+                         value="#{rawProductController.searchResults}"
+                         var="product"
+                         emptyMessage="#{lang['msg.info.table.empty']}" widgetVar="rawProductTable">
+
+                <p:column headerText="#{lang['model.raw.product.name']}">
+                    <h:outputText value="#{product.name}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.raw.product.type']}">
+                    <h:outputText value="#{lang[product.type.labelKey]}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.raw.product.um']}">
+                    <h:outputText value="#{lang[product.um.labelKey]}"/>
+                </p:column>
+
+                <p:column headerText="#{lang['label.action']}" styleClass="th-10 centered">
+                    <!--<p:commandButton icon="fa fa-info"-->
+                    <!--title="#{lang['label.show.details']}"-->
+                    <!--actionListener="#{subscriberSearchController.loadSubscriberDetails(subscriber)}"-->
+                    <!--oncomplete="PF('subscriberDetailDialog').show()"-->
+                    <!--update="subscriberDetailDialog"/>-->
+                    <p:commandButton icon="fa fa-edit"
+                                     title="#{lang['label.edit']}"
+                                     actionListener="#{rawProductController.setSelectedProduct(product)}"
+                                     oncomplete="PF('rawProductEditDialog').show()"
+                                     update="rawProductEditDialog"/>
+                    <!--<p:commandButton icon="fa fa-credit-card"-->
+                    <!--title="#{lang['label.subscriber.cards']}"-->
+                    <!--actionListener="#{subscriberCardController.setSubscriber(subscriber)}"-->
+                    <!--oncomplete="PF('subscriberCardDialog').show()"-->
+                    <!--update="subscriberCardDialog"/>-->
+                    <!--<p:commandButton icon="fa fa-retweet"-->
+                    <!--title="#{lang['label.subscriber.disable']}"-->
+                    <!--actionListener="#{subscriberSuspensionController.setSubscriber(subscriber)}"-->
+                    <!--oncomplete="PF('subscriberSuspensionDialog').show()"-->
+                    <!--update="subscriberSuspensionDialog"/>-->
+                </p:column>
+
+            </p:dataTable>
+        </p:panel>
+
+        <p:dialog id="rawProductAddDialog"
+                  header="#{lang['header.raw.product.add']}"
+                  widgetVar="rawProductAddDialog"
+                  width="80%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <ui:decorate template="/pages/secure/product/raw.product.add.form.xhtml">
+                <ui:param name="componentToUpdate" value="rawProductTable"/>
+                <ui:define name="additionalButton">
+                    <div class="grid-x">
+                        <p:commandButton icon="fa fa-remove"
+                                         styleClass="right"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('rawProductAddDialog').hide()"/>
+                    </div>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+        <p:dialog id="rawProductEditDialog"
+                  header="#{lang['header.raw.product.edit']}"
+                  widgetVar="rawProductEditDialog"
+                  width="80%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <ui:decorate template="/pages/secure/product/raw.product.edit.form.xhtml">
+                <ui:param name="componentToUpdate" value="rawProductTable"/>
+                <ui:define name="additionalButton">
+                    <div class="grid-x">
+                        <p:commandButton icon="fa fa-remove"
+                                         styleClass="right"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('rawProductEditDialog').hide()"/>
+                    </div>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+    </ui:composition>
+</h:body>
+</html>
