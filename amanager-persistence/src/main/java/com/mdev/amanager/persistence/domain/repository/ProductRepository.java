@@ -20,5 +20,7 @@ public interface ProductRepository extends Repository<Product> {
 
     List<Product> findByNamePatternAndType(String name, ProductType type);
 
+    List<Product> findActiveByTypes(ProductType... type);
+
     List<Product> findBySearchParams(ProductSearchParam searchParam);
 }

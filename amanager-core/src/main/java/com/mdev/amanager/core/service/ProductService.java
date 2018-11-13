@@ -3,11 +3,13 @@ package com.mdev.amanager.core.service;
 import com.mdev.amanager.core.datasource.PriceDataSource;
 import com.mdev.amanager.core.datasource.ProductDataSource;
 import com.mdev.amanager.core.datasource.ProductPartDataSource;
-import com.mdev.amanager.core.datasource.validation.MissingRequiredFieldException;
 import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.core.util.ServiceMessages;
 import com.mdev.amanager.persistence.domain.enums.ProductType;
-import com.mdev.amanager.persistence.domain.model.*;
+import com.mdev.amanager.persistence.domain.model.Price;
+import com.mdev.amanager.persistence.domain.model.Product;
+import com.mdev.amanager.persistence.domain.model.ProductPartRegistry;
+import com.mdev.amanager.persistence.domain.model.WithdrawalOrder;
 import com.mdev.amanager.persistence.domain.repository.ProductRepository;
 import com.mdev.amanager.persistence.domain.repository.params.ProductSearchParam;
 import org.apache.commons.collections4.CollectionUtils;
@@ -20,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * Created by gmilazzo on 03/11/2018.
@@ -161,5 +161,10 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> findBySearchParam(ProductSearchParam searchParam) {
         return productRepository.findBySearchParams(searchParam);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Product> findActiveByTypes(ProductType... types) {
+        return productRepository.findActiveByTypes(types);
     }
 }

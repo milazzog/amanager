@@ -42,6 +42,9 @@
                 <property.jdbc.usr>root</property.jdbc.usr>
                 <property.jdbc.pwd>root</property.jdbc.pwd>
 
+                <property.batch.available.cores>4</property.batch.available.cores>
+                <property.refresh.service.job.cron>0 0/1 * 1/1 * ?</property.refresh.service.job.cron>
+
             </properties>
         </profile>
         <profile>
@@ -56,11 +59,19 @@
                 <property.jdbc.usr></property.jdbc.usr>
                 <property.jdbc.pwd></property.jdbc.pwd>
 
+                <property.batch.available.cores>1</property.batch.available.cores>
+                <property.refresh.service.job.cron>0 0/1 * 1/1 * ?</property.refresh.service.job.cron>
+
             </properties>
         </profile>
     </profiles>
 
     <dependencies>
+        <dependency>
+            <groupId>com.mdev</groupId>
+            <artifactId>amanager-batch</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.mdev</groupId>
             <artifactId>amanager-core</artifactId>

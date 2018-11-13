@@ -4,6 +4,7 @@ import com.mdev.amanager.persistence.domain.enums.ProductType;
 import com.mdev.amanager.persistence.domain.model.base.Identifiable;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +18,8 @@ import java.util.Set;
         @NamedQuery(name = "product.find.by.name", query = "from Product p where p.name = :name"),
         @NamedQuery(name = "product.find.by.name.pattern", query = "from Product p where p.name like :name"),
         @NamedQuery(name = "product.find.by.name.and.type", query = "from Product p where p.name = :name and p.type = :type"),
-        @NamedQuery(name = "product.find.by.name.pattern.and.type", query = "from Product p where p.name like :name and p.type = :type")
+        @NamedQuery(name = "product.find.by.name.pattern.and.type", query = "from Product p where p.name like :name and p.type = :type"),
+        @NamedQuery(name = "product.find.active.by.types", query = "from Product p where p.removedAt is null and p.type in (:types)")
 })
 public class Product implements Identifiable {
 

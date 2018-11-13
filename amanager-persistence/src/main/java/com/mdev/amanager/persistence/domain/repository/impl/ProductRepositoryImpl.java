@@ -8,12 +8,16 @@ import com.mdev.amanager.persistence.domain.repository.base.PredicateBuilder;
 import com.mdev.amanager.persistence.domain.repository.params.ProductSearchParam;
 import com.mdev.amanager.persistence.domain.repository.params.base.NumberMatcher;
 import com.mdev.amanager.persistence.domain.repository.params.base.StringMatcher;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by gmilazzo on 02/11/2018.
@@ -53,6 +57,15 @@ public class ProductRepositoryImpl extends BaseRepository<Product> implements Pr
                 .named("product.find.by.name.pattern.and.type")
                 .setParameter("name", like(name))
                 .setParameter("type", type)
+                .getResultList();
+    }
+
+    @Override
+    public List<Product> findActiveByTypes(ProductType... type) {
+
+        return Objects.isNull(type) ? new ArrayList<>() : this
+                .named("product.find.active.by.types")
+                .setParameter("types", Arrays.asList(type))
                 .getResultList();
     }
 

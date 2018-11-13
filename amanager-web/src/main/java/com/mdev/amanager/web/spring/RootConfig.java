@@ -1,5 +1,6 @@
 package com.mdev.amanager.web.spring;
 
+import com.mdev.amanager.batch.spring.BatchContext;
 import com.mdev.amanager.persistence.spring.PersistenceContext;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -9,8 +10,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  */
 @Configuration
 @ComponentScan(basePackages = "com.mdev")
-@PropertySource("classpath:db.properties")
-@Import({SecurityConfig.class, PersistenceContext.class})
+@PropertySource({"classpath:db.properties", "classpath:batch.properties"})
+@Import({SecurityConfig.class, PersistenceContext.class, BatchContext.class})
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 public class RootConfig {
 

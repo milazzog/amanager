@@ -38,6 +38,22 @@
                                     icon="fa fa-cart-plus"/>
                     </p:submenu>
 
+                    <p:submenu label="#{lang['page.food.bar']}"
+                               icon="fa fa-glass">
+                        <p:menuitem value="#{lang['page.bar.console']}"
+                                    outcome="/pages/secure/foodAndBar/bar.console.jsf"
+                                    icon="fa fa-glass"/>
+                        <p:menuitem value="#{lang['page.food.console']}"
+                                    outcome="/pages/secure/foodAndBar/food.console.jsf"
+                                    icon="fa fa-spoon"/>
+                    </p:submenu>
+
+                    <p:submenu label="#{lang['page.cash.register']}"
+                               icon="fa fa-money">
+                        <p:menuitem value="#{lang['page.daily.cash.register']}"
+                                    outcome="/pages/secure/cashRegister/daily.cash.register.jsf"
+                                    icon="fa fa-archive"/>
+                    </p:submenu>
                 </p:menubar>
             </div>
             <div class="large-2 cell">

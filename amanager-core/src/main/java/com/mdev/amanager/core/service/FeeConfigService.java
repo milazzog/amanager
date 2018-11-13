@@ -1,8 +1,8 @@
 package com.mdev.amanager.core.service;
 
+import com.mdev.amanager.core.service.base.Refreshable;
 import com.mdev.amanager.persistence.domain.enums.SubscriberType;
 import com.mdev.amanager.persistence.domain.model.FeeConfig;
-import com.mdev.amanager.persistence.domain.model.Subscriber;
 import com.mdev.amanager.persistence.domain.repository.FeeConfigRepository;
 import com.mdev.amanager.persistence.domain.repository.exceptions.EntityPersistenceException;
 import org.apache.commons.collections4.MapUtils;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,7 +22,7 @@ import java.util.Objects;
  */
 @Service
 @DependsOn("feeConfigRepository")
-public class FeeConfigService {
+public class FeeConfigService implements Refreshable {
 
     private static final Logger logger = LogManager.getLogger(FeeConfigService.class);
 
@@ -38,6 +37,7 @@ public class FeeConfigService {
         refresh();
     }
 
+    @Override
     public void refresh() {
 
         logger.info("refreshing feeConfigMap.");

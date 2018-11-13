@@ -12,6 +12,7 @@
         <module>amanager-web</module>
         <module>amanager-core</module>
         <module>amanager-persistence</module>
+        <module>amanager-batch</module>
     </modules>
 
     <properties>
