@@ -1,4 +1,4 @@
-$(document).foundation()
+$(document).foundation();
 
 $(document).on("pfAjaxComplete", function() {
     var $messages = $(".ui-messages div");
@@ -11,3 +11,6 @@ $(document).on("pfAjaxComplete", function() {
         }, readingTimeMillis);
     }
 });
+
+
+

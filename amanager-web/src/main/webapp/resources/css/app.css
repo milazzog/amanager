@@ -296,3 +296,16 @@ body div.not-active {
     color: white !important;;
     text-shadow: none !important;;
 }
+
+div.ui-messages div ul li span {
+    font-size: 0.85em;
+    margin-left: 5px;
+}
+
+input.spaced-5 {
+    padding-left: 5px;
+}
+
+span.ui-menuitem-text {
+    margin-left: 5px;
+}

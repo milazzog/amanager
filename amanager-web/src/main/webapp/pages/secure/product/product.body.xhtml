@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+    <ui:composition id="productHandling">
+
+        <ui:decorate template="/pages/secure/product/product.search.param.xhtml">
+            <ui:param name="componentToUpdate" value="productTable"/>
+            <ui:define name="additionalButton">
+                <p:commandButton icon="fa fa-plus-circle"
+                                 styleClass="top16 right"
+                                 title="#{lang['label.add']}"
+                                 value="#{lang['label.add']}"
+                                 actionListener="#{productController.beforeAdd()}"
+                                 update="productAddDialog"
+                                 oncomplete="PF('productAddDialog').show()"/>
+            </ui:define>
+        </ui:decorate>
+
+        <p:panel id="productSearchResultPanel">
+            <p:dataTable id="productTable"
+                         value="#{productController.searchResults}"
+                         var="product"
+                         emptyMessage="#{lang['msg.info.table.empty']}" widgetVar="productTable">
+
+                <p:column headerText="#{lang['model.product.name']}">
+                    <h:outputText value="#{product.name}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.product.type']}">
+                    <h:outputText value="#{lang[product.type.labelKey]}"/>
+                </p:column>
+                <p:column headerText="#{lang['model.product.price']}">
+                    <h:outputText
+                            value="#{productController.getActivePrice(product) != null ? productController.getActivePrice(product).amount : ''}"
+                            converter="moneyConverter">
+                        <f:convertNumber type="currency"
+                                         currencySymbol="&euro;"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{lang['model.product.available.quantity']}">
+                    <h:outputText value="#{productController.getAvailableQuantity(product)}"/>
+                </p:column>
+
+                <p:column headerText="#{lang['label.action']}" styleClass="th-10 centered">
+                    <p:commandButton icon="fa fa-edit"
+                                     title="#{lang['label.edit']}"
+                                     actionListener="#{productController.setSelectedProduct(product)}"
+                                     oncomplete="PF('productEditDialog').show()"
+                                     update="productEditDialog"/>
+                </p:column>
+
+            </p:dataTable>
+        </p:panel>
+
+        <p:dialog id="productAddDialog"
+                  header="#{lang['header.product.add']}"
+                  widgetVar="productAddDialog"
+                  width="50%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <ui:decorate template="/pages/secure/product/product.add.form.xhtml">
+                <ui:param name="componentToUpdate" value="productTable"/>
+                <ui:define name="additionalButton">
+                    <div class="grid-x">
+                        <p:commandButton icon="fa fa-remove"
+                                         type="button"
+                                         styleClass="right"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('productAddDialog').hide()"/>
+                    </div>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+        <p:dialog id="productEditDialog"
+                  header="#{lang['header.product.edit']}"
+                  widgetVar="productEditDialog"
+                  width="50%"
+                  position="center"
+                  resizable="false"
+                  draggable="false">
+            <ui:decorate template="/pages/secure/product/product.edit.form.xhtml">
+                <ui:param name="componentToUpdate" value="productTable"/>
+                <ui:define name="additionalButton">
+                    <div class="grid-x">
+                        <p:commandButton icon="fa fa-remove"
+                                         type="button"
+                                         styleClass="right"
+                                         title="#{lang['label.close']}"
+                                         value="#{lang['label.close']}"
+                                         onclick="PF('productEditDialog').hide()"/>
+                    </div>
+                </ui:define>
+            </ui:decorate>
+        </p:dialog>
+
+    </ui:composition>
+</h:body>
+</html>

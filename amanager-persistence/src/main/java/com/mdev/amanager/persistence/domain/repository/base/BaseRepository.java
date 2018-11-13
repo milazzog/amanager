@@ -2,6 +2,8 @@ package com.mdev.amanager.persistence.domain.repository.base;
 
 import com.mdev.amanager.persistence.domain.model.base.Identifiable;
 import com.mdev.amanager.persistence.domain.repository.exceptions.EntityNotFoundException;
+import com.mdev.amanager.persistence.domain.util.ReflectionUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +29,8 @@ public abstract class BaseRepository<T extends Identifiable> implements Reposito
 
     @Transactional
     public void save(T item) {
-        em.persist(item);
+
+        em.persist(ReflectionUtil.uppercaseAllString(item));
     }
 
     @Transactional
@@ -36,7 +40,8 @@ public abstract class BaseRepository<T extends Identifiable> implements Reposito
 
     @Transactional
     public T merge(T item) {
-        return em.merge(item);
+
+        return em.merge(ReflectionUtil.uppercaseAllString(item));
     }
 
     @Transactional
@@ -67,4 +72,6 @@ public abstract class BaseRepository<T extends Identifiable> implements Reposito
     protected TypedQuery<T> named(String query) {
         return em.createNamedQuery(query, getManagedClass());
     }
+
+
 }

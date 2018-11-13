@@ -1,13 +1,15 @@
 package com.mdev.amanager.persistence.domain.repository.base;
 
+import com.mdev.amanager.persistence.domain.model.Price;
+import com.mdev.amanager.persistence.domain.model.Product;
 import com.mdev.amanager.persistence.domain.repository.params.base.DateMatcher;
+import com.mdev.amanager.persistence.domain.repository.params.base.NumberMatcher;
 import com.mdev.amanager.persistence.domain.repository.params.base.StringMatcher;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -109,8 +111,43 @@ public class PredicateBuilder {
         return this;
     }
 
+    public <Z, X> PredicateBuilder append(NumberMatcher value, From<Z, X> from, String field) {
+
+        if (Objects.nonNull(value) && Objects.nonNull(from) && StringUtils.isNotBlank(field)) {
+            if (Objects.nonNull(value.getFrom()) && Objects.nonNull(value.getTo())) {
+                predicates.add(cb.and(cb.gt(from.get(field), value.getFrom()), cb.lt(from.get(field), value.getTo())));
+            } else if (Objects.nonNull(value.getFrom()) && Objects.isNull(value.getTo())) {
+                predicates.add(cb.gt(from.get(field), value.getFrom()));
+            } else if (Objects.isNull(value.getFrom()) && Objects.nonNull(value.getTo())) {
+                predicates.add(cb.lt(from.get(field), value.getTo()));
+            }
+        }
+
+        return this;
+    }
+
+    public <Z, X> PredicateBuilder appendNull(From<Z, X> from, String field) {
+
+        if (Objects.nonNull(from) && StringUtils.isNotBlank(field)) {
+            predicates.add(cb.isNull(from.get(field)));
+        }
+
+        return this;
+    }
+
+    public PredicateBuilder appendNull(Path path) {
+
+        if (Objects.nonNull(path)) {
+            predicates.add(cb.isNull(path));
+        }
+
+        return this;
+    }
+
     public Predicate[] end() {
 
         return predicates.toArray(new Predicate[predicates.size()]);
     }
+
+
 }

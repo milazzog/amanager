@@ -11,6 +11,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "PRICE", uniqueConstraints = @UniqueConstraint(name = "PRICE_UNIQUE", columnNames = {"PRODUCT", "ADDED_AT"}))
+@NamedQueries({
+        @NamedQuery(name = "price.find.by.product", query = "from Price p where p.product = :product")
+})
 public class Price implements Identifiable {
 
     @Id
@@ -36,5 +39,37 @@ public class Price implements Identifiable {
     @Override
     public Long getId() {
         return id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public Date getAddedAt() {
+        return addedAt;
+    }
+
+    public void setAddedAt(Date addedAt) {
+        this.addedAt = addedAt;
+    }
+
+    public Date getRemovedAt() {
+        return removedAt;
+    }
+
+    public void setRemovedAt(Date removedAt) {
+        this.removedAt = removedAt;
     }
 }

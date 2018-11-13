@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+
+    <!--@elvariable id="hideName" type="java.lang.Boolean"-->
+    <!--@elvariable id="hideProductType" type="java.lang.Boolean"-->
+    <!--@elvariable id="hidePrice" type="java.lang.Boolean"-->
+    <!--@elvariable id="componentToUpdate" type="java.lang.String"-->
+
+    <ui:composition id="productSearchParam">
+        <p:panel>
+            <h:form id="productSearchParamForm">
+                <p:panel id="productSearchParamPanel">
+                    <div class="grid-x">
+                        <c:if test="#{hideName == null or !hideName}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="productName"
+                                               value="#{lang['model.product.name']}"/>
+                                <p:inputText id="productName"
+                                             value="#{productController.searchParam.name.value}"/>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hideProductType == null or !hideProductType}">
+                            <div class="large-2 cell field">
+                                <p:outputLabel for="productType"
+                                               value="#{lang['model.product.type']}"/>
+                                <p:selectOneMenu id="productType"
+                                                 value="#{productController.searchParam.type}">
+                                    <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{productController.productTypes}" var="t"
+                                                   itemLabel="#{lang[t.labelKey]}"
+                                                   itemValue="#{t}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </c:if>
+                        <c:if test="#{hidePrice == null or !hidePrice}">
+                            <div class="large-1 cell field">
+                                <p:outputLabel for="productPriceFrom"
+                                               value="#{lang['model.product.price.from']}"/>
+                                <p:inputNumber id="productPriceFrom"
+                                               value="#{productController.searchParam.price.from}"
+                                               symbol=" &euro;"
+                                               decimalSeparator="."
+                                               thousandSeparator=""
+                                               decimalPlaces="2"/>
+                            </div>
+                            <div class="large-1 cell field">
+                                <p:outputLabel for="productPriceTo"
+                                               value="#{lang['model.product.price.to']}"/>
+                                <p:inputNumber id="productPriceTo"
+                                               value="#{productController.searchParam.price.to}"
+                                               symbol=" &euro;"
+                                               decimalSeparator="."
+                                               thousandSeparator=""
+                                               decimalPlaces="2"/>
+                            </div>
+                        </c:if>
+                        <div class="large-1 cell field">
+                            <p:commandButton icon="fa fa-search"
+                                             styleClass="top16"
+                                             title="#{lang['label.search']}"
+                                             actionListener="#{productController.search()}"
+                                             update="#{componentToUpdate}"/>
+                            <p:commandButton icon="fa fa-remove"
+                                             styleClass="top16"
+                                             title="#{lang['label.reset']}"
+                                             actionListener="#{productController.reset()}"
+                                             update="productSearchParamPanel"/>
+                        </div>
+                        <ui:insert name="additionalButton"/>
+                    </div>
+                </p:panel>
+            </h:form>
+        </p:panel>
+    </ui:composition>
+</h:body>
+</html>

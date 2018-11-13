@@ -1,4 +1,4 @@
-package com.mdev.amanager.core.service.model;
+package com.mdev.amanager.core.service;
 
 import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.core.util.CommonUtil;

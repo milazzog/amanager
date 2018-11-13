@@ -1,11 +1,13 @@
 package com.mdev.amanager.core.datasource.validation;
 
-import com.mdev.amanager.core.datasource.validation.MissingRequiredFieldException;
-import com.mdev.amanager.core.datasource.validation.Required;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,6 +37,14 @@ public abstract class DataSource<T> {
                     if (StringUtils.isBlank((String) f.get(this))) {
                         throw new MissingRequiredFieldException(String.format("field %s is blank", f.getName()));
                     }
+                } else if (f.getType().isAssignableFrom(Map.class)) {
+                    if (MapUtils.isEmpty((Map) f.get(this))) {
+                        throw new MissingRequiredFieldException(String.format("field %s is empty", f.getName()));
+                    }
+                } else if (f.getType().isAssignableFrom(Collection.class)) {
+                    if (CollectionUtils.isEmpty((Collection) f.get(this))) {
+                        throw new MissingRequiredFieldException(String.format("field %s is empty", f.getName()));
+                    }
                 } else {
                     if (Objects.isNull(f.get(this))) {
                         throw new MissingRequiredFieldException(String.format("field %s is null", f.getName()));
@@ -46,6 +56,4 @@ public abstract class DataSource<T> {
         }
         return asData();
     }
-
-
 }

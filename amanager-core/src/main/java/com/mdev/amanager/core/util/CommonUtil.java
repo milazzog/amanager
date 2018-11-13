@@ -1,6 +1,7 @@
 package com.mdev.amanager.core.util;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.math.BigDecimal;
@@ -46,11 +47,30 @@ public class CommonUtil {
         return res.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
     }
 
+    public static int toInt(BigDecimal decimal) {
+
+        BigDecimal res = ObjectUtils.defaultIfNull(decimal, BigDecimal.ZERO);
+
+        return res.setScale(2, BigDecimal.ROUND_HALF_UP).intValue();
+    }
+
     public static String dateStr(Date date) {
         return (new SimpleDateFormat("dd-MM-yyyy")).format(date);
     }
 
     public static String timestampStr(Date timestamp) {
         return (new SimpleDateFormat("dd-MM-yyyy HH:mm:ss")).format(timestamp);
+    }
+
+    public static String reduce(String in, String truncation, int maxLen) {
+
+        int len1 = StringUtils.length(in);
+        int len2 = StringUtils.length(truncation);
+
+        if (len1 <= maxLen) {
+            return in;
+        } else {
+            return in.substring(0, maxLen - len2) + truncation;
+        }
     }
 }

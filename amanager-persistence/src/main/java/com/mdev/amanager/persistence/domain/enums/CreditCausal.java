@@ -7,7 +7,8 @@ import com.mdev.amanager.persistence.domain.model.base.Labeled;
  */
 public enum CreditCausal implements Labeled {
 
-    SUBSCRIBER_FEE("credit.causal.subscriber.fee");
+    SUBSCRIBER_FEE("credit.causal.subscriber.fee"),
+    SUPPLYING("credit.causal.supplying");
 
     private String labelKey;
 

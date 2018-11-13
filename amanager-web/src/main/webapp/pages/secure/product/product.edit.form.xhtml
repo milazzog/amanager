@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+
+    <!--@elvariable id="componentToUpdate" type="java.lang.String"-->
+    <!--@elvariable id="rawProduct" type="com.mdev.amanager.persistence.domain.model.RawProduct"-->
+
+    <ui:composition>
+
+        <h:form id="productEditForm">
+
+            <p:panel id="productAddPanel">
+                <p:panel id="productDataPanel" header="#{lang['header.product.product.data']}">
+                    <p:messages id="productMessages" closable="true"/>
+                    <div class="grid-x">
+                        <div class="large-4 cell field">
+                            <p:focus for="productName"/>
+                            <p:outputLabel for="productName"
+                                           value="#{lang['model.product.name']}"/>
+                            <p:inputText id="productName"
+                                         value="#{productController.productDataSource.name}"
+                                         tabindex="1"
+                                         required="true"
+                                         requiredMessage="#{lang['validation.product.name.mandatory']}">
+                            </p:inputText>
+                        </div>
+                        <div class="large-4 cell field">
+                            <p:outputLabel for="productType"
+                                           value="#{lang['model.product.type']}"/>
+                            <p:selectOneMenu id="productType"
+                                             value="#{productController.productDataSource.type}"
+                                             tabindex="2"
+                                             required="true"
+                                             requiredMessage="#{lang['validation.product.type.mandatory']}">
+                                <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{productController.productTypes}" var="t"
+                                               itemLabel="#{lang[t.labelKey]}"
+                                               itemValue="#{t}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="large-4 cell field">
+                            <p:outputLabel for="productPrice"
+                                           value="#{lang['model.product.price']}"/>
+                            <p:inputNumber id="productPrice"
+                                           tabindex="3"
+                                           value="#{productController.priceDataSource.amount}"
+                                           symbol=" &euro;"
+                                           decimalSeparator="."
+                                           thousandSeparator=""
+                                           decimalPlaces="2"
+                                           required="true"
+                                           requiredMessage="#{lang['validation.product.price.mandatory']}"/>
+                        </div>
+                    </div>
+                </p:panel>
+                <p:panel id="productPartDataPanel" header="#{lang['header.product.product.parts']}">
+                    <p:messages id="partMessages" closable="true"/>
+                    <div class="grid-x">
+                        <div class="large-4 cell field">
+                            <p:outputLabel for="rawProductName"
+                                           value="#{lang['model.product.part.name']}"/>
+                            <p:autoComplete id="rawProductName"
+                                            tabindex="4"
+                                            minQueryLength="3"
+                                            maxResults="5"
+                                            completeMethod="#{productController.autocompleteRawProduct}"
+                                            var="rawProduct"
+                                            itemLabel="#{rawProduct.name}"
+                                            itemValue="#{rawProduct}"
+                                            converter="rawProductConverter"
+                                            value="#{productController.productPartDataSource.rawProduct}"
+                                            required="true"
+                                            requiredMessage="#{lang['validation.product.add.product.part.mandatory']}">
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="rawProductUM"/>
+                            </p:autoComplete>
+                        </div>
+                        <div class="large-4 cell field">
+                            <p:outputLabel for="rawProductQuantity"
+                                           value="#{lang['model.product.part.quantity']}"/>
+                            <div class="grid-x">
+                                <div class="large-6 cell">
+                                    <p:inputNumber id="rawProductQuantity"
+                                                   tabindex="5"
+                                                   value="#{productController.productPartDataSource.quantity}"
+                                                   decimalSeparator="."
+                                                   thousandSeparator=""
+                                                   decimalPlaces="2"
+                                                   required="true"
+                                                   requiredMessage="#{lang['validation.product.add.product.part.quantity.mandatory']}"/>
+                                </div>
+                                <div class="large-6 cell">
+                                    <p:inputText id="rawProductUM"
+                                                 styleClass="spaced-5"
+                                                 readonly="true"
+                                                 value="#{productController.productPartDataSource.rawProduct != null ? lang[productController.productPartDataSource.rawProduct.um.labelKey] : ''}"/>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:commandButton icon="fa fa-plus-circle"
+                                             styleClass="top16"
+                                             title="#{lang['label.add']}"
+                                             actionListener="#{productController.addPart()}"
+                                             process="@this, rawProductName, rawProductQuantity, rawProductUM"
+                                             update="productPartDataPanel"/>
+                            <p:commandButton icon="fa fa-remove"
+                                             styleClass="top16"
+                                             title="#{lang['label.reset']}"
+                                             actionListener="#{productController.resetPart()}"
+                                             process="@this"
+                                             partialSubmit="true"
+                                             update="productPartDataPanel"/>
+                        </div>
+                    </div>
+
+                    <div class="grid-x paddingV10">
+                        <p:dataTable id="productPartTable"
+                                     value="#{productController.productPartDataSources}"
+                                     var="part"
+                                     emptyMessage="#{lang['msg.info.table.empty']}" widgetVar="productTable">
+
+                            <p:column headerText="#{lang['model.raw.product.name']}" styleClass="th-35">
+                                <h:outputText value="#{part.rawProduct.name}"/>
+                            </p:column>
+                            <p:column headerText="#{lang['model.raw.product.type.short']}" styleClass="th-20">
+                                <h:outputText value="#{lang[part.rawProduct.type.labelKey]}"/>
+                            </p:column>
+                            <p:column headerText="#{lang['model.product.part.quantity']}" styleClass="th-15">
+                                <h:outputText value="#{part.quantity}"/>
+                            </p:column>
+                            <p:column headerText="#{lang['model.raw.product.um.short']}" styleClass="th-20">
+                                <h:outputText value="#{lang[part.rawProduct.um.labelKey]}"/>
+                            </p:column>
+                            <p:column headerText="#{lang['label.action']}" styleClass="th-10 centered">
+                                <p:commandButton icon="fa fa-remove"
+                                                 title="#{lang['label.remove']}"
+                                                 actionListener="#{productController.removePart(part)}"
+                                                 process="@this"
+                                                 partialSubmit="true"
+                                                 update="productPartTable"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+
+                </p:panel>
+
+                <div class="grid-x paddingV10">
+                    <div class="cell large-12">
+                        <p:commandButton icon="fa fa-edit"
+                                         styleClass="right"
+                                         title="#{lang['label.edit']}"
+                                         value="#{lang['label.edit']}"
+                                         actionListener="#{productController.edit()}"
+                                         process="@this, productDataPanel"
+                                         update="productDataPanel rawProductName rawProductQuantity productPartTable #{componentToUpdate}">
+                            <p:confirm
+                                    header="#{lang['header.confirm']}"
+                                    message="#{lang['msg.info.product.edit.confirm']}"
+                                    icon="ui-icon-alert"/>
+                        </p:commandButton>
+                        <ui:insert name="additionalButton"/>
+                    </div>
+                </div>
+
+                <p:confirmDialog id="confirm"
+                                 global="true"
+                                 showEffect="fade" hideEffect="fade">
+                    <div class="grid-x">
+                        <div class="cell large-12">
+                            <p:commandButton value="#{lang['label.yes']}" type="button"
+                                             styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
+                            <p:commandButton value="#{lang['label.no']}" type="button"
+                                             styleClass="ui-confirmdialog-no right" icon="fa fa-close"/>
+                        </div>
+                    </div>
+                </p:confirmDialog>
+            </p:panel>
+        </h:form>
+    </ui:composition>
+</h:body>
+</html>

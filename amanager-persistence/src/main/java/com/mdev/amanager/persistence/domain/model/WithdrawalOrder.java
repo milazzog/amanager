@@ -37,4 +37,36 @@ public class WithdrawalOrder implements Identifiable {
     public Long getId() {
         return id;
     }
+
+    public RawProductRegistry getRawProductRegistry() {
+        return rawProductRegistry;
+    }
+
+    public void setRawProductRegistry(RawProductRegistry rawProductRegistry) {
+        this.rawProductRegistry = rawProductRegistry;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public SaleAct getSaleAct() {
+        return saleAct;
+    }
+
+    public void setSaleAct(SaleAct saleAct) {
+        this.saleAct = saleAct;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
 }

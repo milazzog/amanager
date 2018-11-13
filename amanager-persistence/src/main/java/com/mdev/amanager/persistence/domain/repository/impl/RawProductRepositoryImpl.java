@@ -70,7 +70,7 @@ public class RawProductRepositoryImpl extends BaseRepository<RawProduct> impleme
     @Override
     public List<RawProduct> findByNamePatternAndType(String namePattern, ProductType type) {
         return this
-                .named("raw.product.find.by.name.pattern")
+                .named("raw.product.find.by.name.pattern.and.type")
                 .setParameter("name", like(namePattern))
                 .setParameter("type", type)
                 .getResultList();

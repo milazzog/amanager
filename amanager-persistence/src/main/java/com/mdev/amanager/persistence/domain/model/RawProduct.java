@@ -6,6 +6,7 @@ import com.mdev.amanager.persistence.domain.model.base.Identifiable;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by gmilazzo on 25/10/2018.
@@ -40,6 +41,9 @@ public class RawProduct implements Identifiable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ADDED_AT", nullable = false)
     private Date addedAt;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "rawProduct")
+    private List<RawProductRegistry> rawProductRegistries;
 
     @Override
     public Long getId() {
@@ -76,6 +80,14 @@ public class RawProduct implements Identifiable {
 
     public void setAddedAt(Date addedAt) {
         this.addedAt = addedAt;
+    }
+
+    public List<RawProductRegistry> getRawProductRegistries() {
+        return rawProductRegistries;
+    }
+
+    public void setRawProductRegistries(List<RawProductRegistry> rawProductRegistries) {
+        this.rawProductRegistries = rawProductRegistries;
     }
 
     @Override

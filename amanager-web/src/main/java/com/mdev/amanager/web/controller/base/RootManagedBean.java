@@ -1,6 +1,7 @@
 package com.mdev.amanager.web.controller.base;
 
 import com.mdev.amanager.persistence.domain.model.User;
+import com.mdev.amanager.persistence.domain.model.base.Identifiable;
 import com.mdev.amanager.persistence.domain.model.base.Localizable;
 import com.mdev.amanager.web.model.UserDetailsImpl;
 import com.mdev.amanager.web.resourcebundle.WebResourceBundle;
@@ -15,6 +16,7 @@ import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -32,6 +34,10 @@ public class RootManagedBean extends SpringBeanAutowiringSupport {
 
     @Autowired
     protected WebResourceBundle resourceBundle;
+
+    public String id(Identifiable obj) {
+        return Objects.nonNull(obj) ? obj.getIdString() : "-";
+    }
 
     public String getDate(Date date) {
 

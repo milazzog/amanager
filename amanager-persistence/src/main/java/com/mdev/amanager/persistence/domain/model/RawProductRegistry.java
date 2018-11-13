@@ -51,4 +51,68 @@ public class RawProductRegistry implements Identifiable {
     public Long getId() {
         return id;
     }
+
+    public ExpenseNote getExpenseNote() {
+        return expenseNote;
+    }
+
+    public void setExpenseNote(ExpenseNote expenseNote) {
+        this.expenseNote = expenseNote;
+    }
+
+    public RawProduct getRawProduct() {
+        return rawProduct;
+    }
+
+    public void setRawProduct(RawProduct rawProduct) {
+        this.rawProduct = rawProduct;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public Date getAddedAt() {
+        return addedAt;
+    }
+
+    public void setAddedAt(Date addedAt) {
+        this.addedAt = addedAt;
+    }
+
+    public boolean isOver() {
+        return over;
+    }
+
+    public void setOver(boolean over) {
+        this.over = over;
+    }
+
+    public Date getOverAt() {
+        return overAt;
+    }
+
+    public void setOverAt(Date overAt) {
+        this.overAt = overAt;
+    }
+
+    public Set<WithdrawalOrder> getWithdrawalOrders() {
+        return withdrawalOrders;
+    }
+
+    public void setWithdrawalOrders(Set<WithdrawalOrder> withdrawalOrders) {
+        this.withdrawalOrders = withdrawalOrders;
+    }
 }

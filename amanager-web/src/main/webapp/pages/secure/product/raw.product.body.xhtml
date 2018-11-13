@@ -15,9 +15,9 @@
                                  styleClass="top16 right"
                                  title="#{lang['label.add']}"
                                  value="#{lang['label.add']}"
-                                 actionListener="#{rawProductController.beforeAdd()}"
-                                 onclick="PF('rawProductAddDialog').show()"
-                />
+                                 actionListener="#{rawProductController.beforeAdd}"
+                                 update="rawProductAddDialog"
+                                 oncomplete="PF('rawProductAddDialog').show()"/>
             </ui:define>
         </ui:decorate>
 
@@ -34,31 +34,19 @@
                 <p:column headerText="#{lang['model.raw.product.type']}">
                     <h:outputText value="#{lang[product.type.labelKey]}"/>
                 </p:column>
+                <p:column headerText="#{lang['model.raw.product.registry.quantity']}">
+                    <h:outputText value="#{rawProductController.getQuantity(product)}"/>
+                </p:column>
                 <p:column headerText="#{lang['model.raw.product.um']}">
                     <h:outputText value="#{lang[product.um.labelKey]}"/>
                 </p:column>
 
                 <p:column headerText="#{lang['label.action']}" styleClass="th-10 centered">
-                    <!--<p:commandButton icon="fa fa-info"-->
-                    <!--title="#{lang['label.show.details']}"-->
-                    <!--actionListener="#{subscriberSearchController.loadSubscriberDetails(subscriber)}"-->
-                    <!--oncomplete="PF('subscriberDetailDialog').show()"-->
-                    <!--update="subscriberDetailDialog"/>-->
                     <p:commandButton icon="fa fa-edit"
                                      title="#{lang['label.edit']}"
                                      actionListener="#{rawProductController.setSelectedProduct(product)}"
                                      oncomplete="PF('rawProductEditDialog').show()"
                                      update="rawProductEditDialog"/>
-                    <!--<p:commandButton icon="fa fa-credit-card"-->
-                    <!--title="#{lang['label.subscriber.cards']}"-->
-                    <!--actionListener="#{subscriberCardController.setSubscriber(subscriber)}"-->
-                    <!--oncomplete="PF('subscriberCardDialog').show()"-->
-                    <!--update="subscriberCardDialog"/>-->
-                    <!--<p:commandButton icon="fa fa-retweet"-->
-                    <!--title="#{lang['label.subscriber.disable']}"-->
-                    <!--actionListener="#{subscriberSuspensionController.setSubscriber(subscriber)}"-->
-                    <!--oncomplete="PF('subscriberSuspensionDialog').show()"-->
-                    <!--update="subscriberSuspensionDialog"/>-->
                 </p:column>
 
             </p:dataTable>
@@ -67,7 +55,7 @@
         <p:dialog id="rawProductAddDialog"
                   header="#{lang['header.raw.product.add']}"
                   widgetVar="rawProductAddDialog"
-                  width="80%"
+                  width="50%"
                   position="center"
                   resizable="false"
                   draggable="false">
@@ -76,6 +64,7 @@
                 <ui:define name="additionalButton">
                     <div class="grid-x">
                         <p:commandButton icon="fa fa-remove"
+                                         type="button"
                                          styleClass="right"
                                          title="#{lang['label.close']}"
                                          value="#{lang['label.close']}"
@@ -88,7 +77,7 @@
         <p:dialog id="rawProductEditDialog"
                   header="#{lang['header.raw.product.edit']}"
                   widgetVar="rawProductEditDialog"
-                  width="80%"
+                  width="50%"
                   position="center"
                   resizable="false"
                   draggable="false">
@@ -105,7 +94,6 @@
                 </ui:define>
             </ui:decorate>
         </p:dialog>
-
     </ui:composition>
 </h:body>
 </html>

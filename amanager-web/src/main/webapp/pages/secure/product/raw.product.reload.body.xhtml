@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:body>
+    <ui:composition id="rawProductReload">
+
+        <p:panel id="rawProductReloadPanel">
+            <h:form>
+                <p:messages id="messages" closable="true"/>
+                <p:panel id="rawProductReloadDataPanel">
+                    <div class="grid-x">
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="rawProductType"
+                                           value="#{lang['model.raw.product.type']}"/>
+                            <p:selectOneMenu id="rawProductType"
+                                             value="#{rawProductReloadController.productType}">
+                                <f:selectItem itemLabel="#{lang['label.select']}" noSelectionOption="true"/>
+                                <f:selectItems value="#{rawProductReloadController.productTypes}" var="t"
+                                               itemLabel="#{lang[t.labelKey]}"
+                                               itemValue="#{t}"/>
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="rawProductName"
+                                        listener="#{rawProductReloadController.updateAutocomplete()}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:focus for="rawProductName"/>
+                            <p:outputLabel for="rawProductName"
+                                           value="#{lang['model.raw.product.name']}"/>
+                            <p:autoComplete id="rawProductName"
+                                            tabindex="1"
+                                            minQueryLength="3"
+                                            maxResults="5"
+                                            completeMethod="#{rawProductReloadController.autocompleteProduct}"
+                                            var="rawProduct"
+                                            itemLabel="#{rawProduct.name}"
+                                            itemValue="#{rawProduct}"
+                                            converter="rawProductConverter"
+                                            value="#{rawProductReloadController.rawProductRegistry.rawProduct}"
+                                            required="true"
+                                            requiredMessage="#{lang['validation.raw.product.registry.raw.product.mandatory']}">
+                                <p:ajax process="@this"
+                                        partialSubmit="true"
+                                        update="rawProductType"
+                                        listener="#{rawProductReloadController.updateSelector()}"/>
+                            </p:autoComplete>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="rawProductQuantity"
+                                           value="#{lang['model.raw.product.registry.quantity']}"/>
+                            <p:inputNumber id="rawProductQuantity"
+                                           tabindex="2"
+                                           value="#{rawProductReloadController.rawProductRegistry.quantity}"
+                                           minValue="0"
+                                           maxValue="999"
+                                           decimalSeparator="."
+                                           thousandSeparator=""
+                                           decimalPlaces="2"
+                                           required="true"
+                                           requiredMessage="#{lang['validation.raw.product.registry.quantity.mandatory']}"/>
+                        </div>
+                        <div class="large-2 cell field">
+                            <p:outputLabel for="rawProductAmount"
+                                           value="#{lang['model.raw.product.registry.amount']}"/>
+                            <p:inputNumber id="rawProductAmount"
+                                           tabindex="3"
+                                           value="#{rawProductReloadController.rawProductRegistry.amount}"
+                                           symbol=" &euro;"
+                                           decimalSeparator="."
+                                           thousandSeparator=""
+                                           decimalPlaces="2"
+                                           required="true"
+                                           requiredMessage="#{lang['validation.raw.product.registry.amount.mandatory']}"/>
+                        </div>
+                        <div class="large-1 cell field">
+                            <p:commandButton icon="fa fa-plus-circle"
+                                             tabindex="4"
+                                             styleClass="top16"
+                                             title="#{lang['label.add']}"
+                                             process="rawProductReloadDataPanel"
+                                             partialSubmit="true"
+                                             actionListener="#{rawProductReloadController.add()}"
+                                             update="rawProductReloadPanel"/>
+                        </div>
+                        <div class="large-3 cell field">
+                            <p:commandButton icon="fa fa-save"
+                                             styleClass="top16 right"
+                                             title="#{lang['label.save']}"
+                                             value="#{lang['label.save']}"
+                                             process="@this"
+                                             partialSubmit="true"
+                                             actionListener="#{rawProductReloadController.save()}"
+                                             update="rawProductReloadPanel">
+                                <p:confirm
+                                        header="#{lang['header.confirm']}"
+                                        message="#{lang['msg.info.raw.product.reload.confirm']}"
+                                        icon="ui-icon-alert"/>
+                            </p:commandButton>
+                            <p:commandButton icon="fa fa-remove"
+                                             styleClass="top16 right"
+                                             title="#{lang['label.reset']}"
+                                             value="#{lang['label.reset']}"
+                                             process="@this"
+                                             partialSubmit="true"
+                                             actionListener="#{rawProductReloadController.clear()}"
+                                             update="rawProductReloadPanel"/>
+                        </div>
+                    </div>
+                </p:panel>
+
+                <div class="paddingV10">
+                    <p:dataTable id="rawProductTable"
+                                 value="#{rawProductReloadController.rawProductRegistries}"
+                                 var="rp"
+                                 emptyMessage="#{lang['msg.info.table.empty']}" widgetVar="rawProductTable">
+
+                        <p:column headerText="#{lang['model.identifiable.id']}">
+                            <h:outputText value="#{rawProductReloadController.id(rp.rawProduct)}"/>
+                        </p:column>
+                        <p:column headerText="#{lang['model.raw.product.name']}">
+                            <h:outputText value="#{rp.rawProduct.name}"/>
+                        </p:column>
+                        <p:column headerText="#{lang['model.raw.product.type']}">
+                            <h:outputText value="#{lang[rp.rawProduct.type.labelKey]}"/>
+                        </p:column>
+                        <p:column headerText="#{lang['model.raw.product.registry.quantity']}">
+                            <h:outputText value="#{rp.quantity}"/>
+                        </p:column>
+                        <p:column headerText="#{lang['model.raw.product.um']}">
+                            <h:outputText value="#{lang[rp.rawProduct.um.labelKey]}"/>
+                        </p:column>
+                        <p:column headerText="#{lang['model.raw.product.registry.amount']}">
+                            <h:outputText value="#{rp.amount}" converter="moneyConverter"/>
+                        </p:column>
+
+                        <p:column headerText="#{lang['label.action']}" styleClass="th-10 centered">
+                            <p:commandButton icon="fa fa-minus-circle"
+                                             title="#{lang['label.remove']}"
+                                             actionListener="#{rawProductReloadController.remove(rp)}"
+                                             process="@this"
+                                             update="rawProductTable"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+
+                <p:confirmDialog id="confirm"
+                                 global="true"
+                                 showEffect="fade" hideEffect="fade">
+                    <div class="grid-x">
+                        <div class="cell large-12">
+                            <p:commandButton value="#{lang['label.yes']}" type="button"
+                                             styleClass="ui-confirmdialog-yes right" icon="fa fa-check"/>
+                            <p:commandButton value="#{lang['label.no']}" type="button"
+                                             styleClass="ui-confirmdialog-no right" icon="fa fa-close"/>
+                        </div>
+                    </div>
+                </p:confirmDialog>
+            </h:form>
+        </p:panel>
+    </ui:composition>
+</h:body>
+</html>

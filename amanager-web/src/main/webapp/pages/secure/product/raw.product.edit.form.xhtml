@@ -19,7 +19,7 @@
 
                 <p:panel id="rawProductDataPanel">
                     <div class="grid-x">
-                        <div class="large-2 cell field">
+                        <div class="large-4 cell field">
                             <p:outputLabel for="rawProductName"
                                            value="#{lang['model.raw.product.name']}"/>
                             <p:inputText id="rawProductName"
@@ -28,7 +28,7 @@
                                          requiredMessage="#{lang['validation.raw.product.name.mandatory']}">
                             </p:inputText>
                         </div>
-                        <div class="large-2 cell field">
+                        <div class="large-4 cell field">
                             <p:outputLabel for="rawProductType"
                                            value="#{lang['model.raw.product.type']}"/>
                             <p:selectOneMenu id="rawProductType"
@@ -42,7 +42,7 @@
                                 listener="#{subscriberEditController.generateVatCode}"/>
                             </p:selectOneMenu>
                         </div>
-                        <div class="large-2 cell field">
+                        <div class="large-4 cell field">
                             <p:outputLabel for="rawProductUM"
                                            value="#{lang['model.raw.product.um']}"/>
                             <p:selectOneMenu id="rawProductUM"

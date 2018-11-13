@@ -6,7 +6,6 @@ import com.mdev.amanager.persistence.domain.repository.params.base.DateMatcher;
 import com.mdev.amanager.persistence.domain.repository.params.base.DatePattern;
 import com.mdev.amanager.persistence.domain.repository.params.base.SearchParam;
 import com.mdev.amanager.persistence.domain.repository.params.base.StringMatcher;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  * Created by gmilazzo on 05/10/2018.

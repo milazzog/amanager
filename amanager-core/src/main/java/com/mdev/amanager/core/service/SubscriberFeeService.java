@@ -1,7 +1,6 @@
 package com.mdev.amanager.core.service;
 
 import com.mdev.amanager.core.service.exceptions.ServiceException;
-import com.mdev.amanager.core.service.model.CreditNoteService;
 import com.mdev.amanager.core.service.model.SubscriberFeeCalculationResult;
 import com.mdev.amanager.core.util.CommonUtil;
 import com.mdev.amanager.persistence.domain.enums.CreditCausal;

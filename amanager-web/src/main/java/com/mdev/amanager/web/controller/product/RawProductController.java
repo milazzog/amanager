@@ -6,8 +6,11 @@ import com.mdev.amanager.core.service.exceptions.ServiceException;
 import com.mdev.amanager.persistence.domain.enums.ProductType;
 import com.mdev.amanager.persistence.domain.enums.UM;
 import com.mdev.amanager.persistence.domain.model.RawProduct;
+import com.mdev.amanager.persistence.domain.model.RawProductRegistry;
+import com.mdev.amanager.persistence.domain.model.WithdrawalOrder;
 import com.mdev.amanager.persistence.domain.repository.params.RawProductSearchParam;
 import com.mdev.amanager.web.controller.base.RootManagedBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BinaryOperator;
 
 /**
  * Created by gmilazzo on 31/10/2018.
@@ -37,8 +43,8 @@ public class RawProductController extends RootManagedBean {
 
     @PostConstruct
     public void init() {
-        reset();
         beforeAdd();
+        reset();
         search();
     }
 
@@ -83,13 +89,41 @@ public class RawProductController extends RootManagedBean {
             search();
             messageManager.info("msg.info.raw.product.edit");
         } catch (ServiceException e) {
-            logger.error(String.format("error while adding %s:", RawProduct.class.getSimpleName()), e);
+            logger.error(String.format("error while editing %s:", RawProduct.class.getSimpleName()), e);
             if (e.getCause() instanceof DataIntegrityViolationException) {
                 messageManager.error(null, "msg.error.raw.product.edit.duplicate", rawProductDataSource.getName());
             } else {
                 messageManager.error("msg.error.raw.product.edit");
             }
         }
+    }
+
+    public BigDecimal getQuantity(RawProduct rawProduct) {
+
+        if (Objects.isNull(rawProduct)) {
+            return BigDecimal.ZERO;
+        }
+
+        List<RawProductRegistry> rawProductRegistries = rawProduct.getRawProductRegistries();
+
+        if (CollectionUtils.isEmpty(rawProductRegistries)) {
+            return BigDecimal.ZERO;
+        }
+
+        return rawProductRegistries
+                .stream()
+                .filter(rp -> !rp.isOver())
+                .map(rp -> rp
+                        .getQuantity()
+                        .subtract(
+                                rp
+                                        .getWithdrawalOrders()
+                                        .stream()
+                                        .map(WithdrawalOrder::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add)
+                        )
+                )
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public void setSelectedProduct(RawProduct rawProduct) {
